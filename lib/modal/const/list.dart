@@ -6,5 +6,4 @@ List bottomNavBarItems = [
   ConstImage.attendance,
   ConstImage.notification,
   ConstImage.option,
-
 ];
