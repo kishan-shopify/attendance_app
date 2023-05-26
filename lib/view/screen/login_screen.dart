@@ -6,7 +6,6 @@ import '../../modal/const/const_color.dart';
 import '../../modal/const/const_image.dart';
 import '../../modal/custom/custom_button.dart';
 import '../../modal/custom/custom_text_field.dart';
-import 'employee/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);

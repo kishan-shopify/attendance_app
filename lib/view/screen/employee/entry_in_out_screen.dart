@@ -1,8 +1,7 @@
-// ignore_for_file: unrelated_type_equality_checks
+// ignore_for_file: unrelated_type_equality_checks, use_build_context_synchronously
 
-import 'dart:developer';
-
-import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:attendance_app/view/screen/employee/camera_screen.dart';
+import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -64,12 +63,15 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
     final Size size = MediaQuery.of(context).size;
     return Stack(
       children: [
-        SizedBox(
-          height: double.infinity,
-          width: double.infinity,
-          child: Image.asset(
-            ConstImage.background,
-            fit: BoxFit.cover,
+        RotatedBox(
+          quarterTurns: 2,
+          child: SizedBox(
+            height: double.infinity,
+            width: double.infinity,
+            child: Image.asset(
+              ConstImage.background,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
         Padding(
@@ -82,38 +84,34 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  AnimatedTextKit(
-                    animatedTexts: [
-                      ColorizeAnimatedText(
-                        "Janovis",
-                        textAlign: TextAlign.center,
-                        textStyle: TextStyle(
-                          fontSize: size.width * 0.06,
-                          fontWeight: FontWeight.w700,
-                        ),
-                        colors: [
-                          ConstColor.primaryGradient2,
-                          ConstColor.primaryGradient1,
-                        ],
-                      ),
-                    ],
-                    totalRepeatCount: 1,
-                    pause: const Duration(milliseconds: 500),
-                    displayFullTextOnTap: true,
-                  ),
-
-                  // Container(
-                  //   alignment: Alignment.centerLeft,
-                  //   height: size.height * 0.065,
-                  //   width: size.width * 0.65,
-                  //   padding: const EdgeInsets.only(left: 10),
-                  //
-                  //
-                  //   child: Image.asset(
-                  //     "assets/images/janovis_logo.png",
-                  //     fit: BoxFit.contain,
-                  //   ),
+                  // AnimatedTextKit(
+                  //   animatedTexts: [
+                  //     ColorizeAnimatedText(
+                  //       "Janovis",
+                  //       textAlign: TextAlign.center,
+                  //       textStyle: TextStyle(
+                  //         fontSize: size.width * 0.06,
+                  //         fontWeight: FontWeight.w700,
+                  //       ),
+                  //       colors: [
+                  //         ConstColor.primaryGradient2,
+                  //         ConstColor.primaryGradient1,
+                  //       ],
+                  //     ),
+                  //   ],
+                  //   totalRepeatCount: 1,
+                  //   pause: const Duration(milliseconds: 500),
+                  //   displayFullTextOnTap: true,
                   // ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    height: size.height * 0.06,
+                    width: size.width * 0.6,
+                    child: Image.asset(
+                      "assets/images/janovis_logo.png",
+                      fit: BoxFit.contain,
+                    ),
+                  ),
 
                   Container(
                     height: size.height * 0.12,
@@ -170,99 +168,127 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
               SizedBox(
                 height: size.height * 0.07,
               ),
-              (checkOut == "--/--")
-                  ? GestureCircle(
-                      onTap: () async {
-                        QuerySnapshot snap = await FirebaseFirestore.instance
-                            .collection("Employee")
-                            .where('id', isEqualTo: User.employeeId)
-                            .get();
 
-                        DocumentSnapshot snap2 = await FirebaseFirestore
-                            .instance
-                            .collection("Employee")
-                            .doc(snap.docs[0].id)
-                            .collection("Record")
-                            .doc(DateFormat('dd MMMM yyyy')
-                                .format(DateTime.now()))
-                            .get();
+              GestureCircle(
+                onTap: () async{
+                  List<CameraDescription> cameras = await availableCameras();
+                  CameraController controller =
+                  CameraController(cameras[1], ResolutionPreset.high);
+                  await controller.initialize();
 
-                        log("OUTPUT == $snap");
-                        log("OUTPUT 2 == $snap2");
-
-                        try {
-                          String checkIn = snap2['checkIn'];
-
-                          setState(() {
-                            checkOut =
-                                DateFormat('hh:mm').format(DateTime.now());
-                          });
-
-                          await FirebaseFirestore.instance
-                              .collection("Employee")
-                              .doc(snap.docs[0].id)
-                              .collection("Record")
-                              .doc(DateFormat('dd MMMM yyyy')
-                                  .format(DateTime.now()))
-                              .update({
-                            'date': Timestamp.now(),
-                            'checkIn': checkIn,
-                            'checkOut':
-                                DateFormat('hh:mm').format(DateTime.now()),
-                          });
-                        } catch (e) {
-                          setState(() {
-                            checkIn =
-                                DateFormat('hh:mm').format(DateTime.now());
-                          });
-
-                          await FirebaseFirestore.instance
-                              .collection("Employee")
-                              .doc(snap.docs[0].id)
-                              .collection("Record")
-                              .doc(DateFormat('dd MMMM yyyy')
-                                  .format(DateTime.now()))
-                              .set({
-                            'date': Timestamp.now(),
-                            'checkIn':
-                                DateFormat('hh:mm').format(DateTime.now()),
-                            'checkOut': "--/--",
-                          });
-                        }
-                      },
-                      image: ConstImage.finger,
-                      btnLabel: (checkIn == "--/--") ? "Clock In" : "Clock Out",
-                      gradientColor: (checkIn == "--/--")
-                          ? [
-                              ConstColor.primaryGradient2,
-                              ConstColor.primaryGradient1,
-                            ]
-                          : [
-                              ConstColor.btnGradient1,
-                              ConstColor.btnGradient2,
-                            ],
-                    )
-                  : GestureCircle(
-                      onTap: () {
-                        Get.snackbar("Oops..", "You have done for today..!",
-                            colorText: ConstColor.white,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 25, vertical: 15),
-                            backgroundColor: ConstColor.orange.withOpacity(0.8),
-                            icon: Icon(
-                              Icons.error_outline,
-                              color: ConstColor.white,
-                              size: 30,
-                            ));
-                      },
-                      isMinimize: true,
-                      image: ConstImage.doneToday,
-                      btnLabel: "Done for Today",
-                      gradientColor: [
-                        ConstColor.grey,
-                        ConstColor.grey,
-                      ],
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => CameraScreen(controller,),
                     ),
+                  );
+                },
+                image: ConstImage.finger,
+                btnLabel: (checkIn == "--/--") ? "Clock In" : "Clock Out",
+                gradientColor: (checkIn == "--/--")
+                    ? [
+                        ConstColor.primaryGradient2,
+                        ConstColor.primaryGradient1,
+                      ]
+                    : [
+                        ConstColor.btnGradient1,
+                        ConstColor.btnGradient2,
+                      ],
+              ),
+
+              // (checkOut == "--/--")
+              //     ? GestureCircle(
+              //         onTap: () async {
+              //           QuerySnapshot snap = await FirebaseFirestore.instance
+              //               .collection("Employee")
+              //               .where('id', isEqualTo: User.employeeId)
+              //               .get();
+              //
+              //           DocumentSnapshot snap2 = await FirebaseFirestore
+              //               .instance
+              //               .collection("Employee")
+              //               .doc(snap.docs[0].id)
+              //               .collection("Record")
+              //               .doc(DateFormat('dd MMMM yyyy')
+              //                   .format(DateTime.now()))
+              //               .get();
+              //
+              //           log("OUTPUT == $snap");
+              //           log("OUTPUT 2 == $snap2");
+              //
+              //           try {
+              //             String checkIn = snap2['checkIn'];
+              //
+              //             setState(() {
+              //               checkOut =
+              //                   DateFormat('hh:mm').format(DateTime.now());
+              //             });
+              //
+              //             await FirebaseFirestore.instance
+              //                 .collection("Employee")
+              //                 .doc(snap.docs[0].id)
+              //                 .collection("Record")
+              //                 .doc(DateFormat('dd MMMM yyyy')
+              //                     .format(DateTime.now()))
+              //                 .update({
+              //               'date': Timestamp.now(),
+              //               'checkIn': checkIn,
+              //               'checkOut':
+              //                   DateFormat('hh:mm').format(DateTime.now()),
+              //             });
+              //           } catch (e) {
+              //             setState(() {
+              //               checkIn =
+              //                   DateFormat('hh:mm').format(DateTime.now());
+              //             });
+              //
+              //             await FirebaseFirestore.instance
+              //                 .collection("Employee")
+              //                 .doc(snap.docs[0].id)
+              //                 .collection("Record")
+              //                 .doc(DateFormat('dd MMMM yyyy')
+              //                     .format(DateTime.now()))
+              //                 .set({
+              //               'date': Timestamp.now(),
+              //               'checkIn':
+              //                   DateFormat('hh:mm').format(DateTime.now()),
+              //               'checkOut': "--/--",
+              //             });
+              //           }
+              //         },
+              //         image: ConstImage.finger,
+              //         btnLabel: (checkIn == "--/--") ? "Clock In" : "Clock Out",
+              //         gradientColor: (checkIn == "--/--")
+              //             ? [
+              //                 ConstColor.primaryGradient2,
+              //                 ConstColor.primaryGradient1,
+              //               ]
+              //             : [
+              //                 ConstColor.btnGradient1,
+              //                 ConstColor.btnGradient2,
+              //               ],
+              //       )
+              //     : GestureCircle(
+              //         onTap: () {
+              //           Get.snackbar("Oops..", "You have done for today..!",
+              //               colorText: ConstColor.white,
+              //               padding: const EdgeInsets.symmetric(
+              //                   horizontal: 25, vertical: 15),
+              //               backgroundColor: ConstColor.orange.withOpacity(0.8),
+              //               icon: Icon(
+              //                 Icons.error_outline,
+              //                 color: ConstColor.white,
+              //                 size: 30,
+              //               ));
+              //         },
+              //         isMinimize: true,
+              //         image: ConstImage.doneToday,
+              //         btnLabel: "Done for Today",
+              //         gradientColor: [
+              //           ConstColor.grey,
+              //           ConstColor.grey,
+              //         ],
+              //       ),
               Expanded(
                 child: Container(),
               ),
@@ -274,7 +300,10 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
                       SizedBox(
                           height: 40,
                           width: 40,
-                          child: Image.asset(ConstImage.clockIn,color: ConstColor.grey,)),
+                          child: Image.asset(
+                            ConstImage.clockIn,
+                            color: ConstColor.grey,
+                          )),
                       const SizedBox(
                         height: 10,
                       ),
@@ -286,7 +315,10 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
                       SizedBox(
                           height: 40,
                           width: 40,
-                          child: Image.asset(ConstImage.clockOut,color: ConstColor.grey,)),
+                          child: Image.asset(
+                            ConstImage.clockOut,
+                            color: ConstColor.grey,
+                          )),
                       const SizedBox(
                         height: 10,
                       ),
