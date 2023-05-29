@@ -2,8 +2,6 @@ class ConstImage{
   ConstImage._();
 //images
   static const String janovisLogo = "assets/images/janovis_logo.png";
-
-//svg
   static const String home = "assets/images/home.png";
   static const String attendance = "assets/images/attendance.png";
   static const String background = "assets/images/background.png";
@@ -14,5 +12,6 @@ class ConstImage{
   static const String clockIn = "assets/images/clock_in.png";
   static const String clockOut = "assets/images/clock_out.png";
   static const String doneToday = "assets/images/done_today.png";
+  static const String arrowBack = "assets/images/back_arrow.png";
 
 }

@@ -1,20 +1,19 @@
-import 'package:attendance_app/modal/const/const_color.dart';
-import 'package:attendance_app/modal/const/text_style.dart';
 import 'package:flutter/material.dart';
 
-class CustomButton extends StatelessWidget {
+import '../const/text_style.dart';
+
+class GradientButton extends StatelessWidget {
   final String btnLabel;
+  final List<Color> gradientColor;
   final Function onTap;
-  final Color btnColor;
   final Color labelColor;
 
-  const CustomButton(
+  const GradientButton(
       {Key? key,
       required this.btnLabel,
       required this.onTap,
-      required this.btnColor,
-      required this.labelColor
-      })
+      required this.labelColor,
+      required this.gradientColor})
       : super(key: key);
 
   @override
@@ -28,9 +27,11 @@ class CustomButton extends StatelessWidget {
         height: 60,
         width: size.width,
         decoration: BoxDecoration(
-          color: btnColor,
           borderRadius: const BorderRadius.all(Radius.circular(14)),
-
+          gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.topLeft,
+              colors: gradientColor),
         ),
         child: Center(
           child: Text(btnLabel,
