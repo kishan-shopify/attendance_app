@@ -1,13 +1,10 @@
-// ignore_for_file: unrelated_type_equality_checks, use_build_context_synchronously
+import 'dart:developer';
 
-import 'package:attendance_app/view/screen/employee/camera_screen.dart';
-import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/entry_in_out_controller.dart';
 import '../../../modal/const/const_color.dart';
 import '../../../modal/const/const_image.dart';
 import '../../../modal/const/text_style.dart';
@@ -168,127 +165,44 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
               SizedBox(
                 height: size.height * 0.07,
               ),
-
-              GestureCircle(
-                onTap: () async{
-                  List<CameraDescription> cameras = await availableCameras();
-                  CameraController controller =
-                  CameraController(cameras[1], ResolutionPreset.high);
-                  await controller.initialize();
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => CameraScreen(controller,),
-                    ),
-                  );
-                },
-                image: ConstImage.finger,
-                btnLabel: (checkIn == "--/--") ? "Clock In" : "Clock Out",
-                gradientColor: (checkIn == "--/--")
-                    ? [
-                        ConstColor.primaryGradient2,
-                        ConstColor.primaryGradient1,
-                      ]
-                    : [
-                        ConstColor.btnGradient1,
-                        ConstColor.btnGradient2,
+              (checkOut == "--/--")
+                  ? GestureCircle(
+                      onTap: ()  {
+                            clockInOut();
+                      },
+                      image: ConstImage.finger,
+                      btnLabel: (checkIn == "--/--") ? "Clock In" : "Clock Out",
+                      gradientColor: (checkIn == "--/--")
+                          ? [
+                              ConstColor.primaryGradient2,
+                              ConstColor.primaryGradient1,
+                            ]
+                          : [
+                              ConstColor.btnGradient1,
+                              ConstColor.btnGradient2,
+                            ],
+                    )
+                  : GestureCircle(
+                      onTap: () {
+                        Get.snackbar("Oops..", "You have done for today..!",
+                            colorText: ConstColor.white,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 25, vertical: 15),
+                            backgroundColor: ConstColor.orange.withOpacity(0.8),
+                            icon: Icon(
+                              Icons.error_outline,
+                              color: ConstColor.white,
+                              size: 30,
+                            ));
+                      },
+                      isMinimize: true,
+                      image: ConstImage.doneToday,
+                      btnLabel: "Done for Today",
+                      gradientColor: [
+                        ConstColor.grey,
+                        ConstColor.grey,
                       ],
-              ),
-
-              // (checkOut == "--/--")
-              //     ? GestureCircle(
-              //         onTap: () async {
-              //           QuerySnapshot snap = await FirebaseFirestore.instance
-              //               .collection("Employee")
-              //               .where('id', isEqualTo: User.employeeId)
-              //               .get();
-              //
-              //           DocumentSnapshot snap2 = await FirebaseFirestore
-              //               .instance
-              //               .collection("Employee")
-              //               .doc(snap.docs[0].id)
-              //               .collection("Record")
-              //               .doc(DateFormat('dd MMMM yyyy')
-              //                   .format(DateTime.now()))
-              //               .get();
-              //
-              //           log("OUTPUT == $snap");
-              //           log("OUTPUT 2 == $snap2");
-              //
-              //           try {
-              //             String checkIn = snap2['checkIn'];
-              //
-              //             setState(() {
-              //               checkOut =
-              //                   DateFormat('hh:mm').format(DateTime.now());
-              //             });
-              //
-              //             await FirebaseFirestore.instance
-              //                 .collection("Employee")
-              //                 .doc(snap.docs[0].id)
-              //                 .collection("Record")
-              //                 .doc(DateFormat('dd MMMM yyyy')
-              //                     .format(DateTime.now()))
-              //                 .update({
-              //               'date': Timestamp.now(),
-              //               'checkIn': checkIn,
-              //               'checkOut':
-              //                   DateFormat('hh:mm').format(DateTime.now()),
-              //             });
-              //           } catch (e) {
-              //             setState(() {
-              //               checkIn =
-              //                   DateFormat('hh:mm').format(DateTime.now());
-              //             });
-              //
-              //             await FirebaseFirestore.instance
-              //                 .collection("Employee")
-              //                 .doc(snap.docs[0].id)
-              //                 .collection("Record")
-              //                 .doc(DateFormat('dd MMMM yyyy')
-              //                     .format(DateTime.now()))
-              //                 .set({
-              //               'date': Timestamp.now(),
-              //               'checkIn':
-              //                   DateFormat('hh:mm').format(DateTime.now()),
-              //               'checkOut': "--/--",
-              //             });
-              //           }
-              //         },
-              //         image: ConstImage.finger,
-              //         btnLabel: (checkIn == "--/--") ? "Clock In" : "Clock Out",
-              //         gradientColor: (checkIn == "--/--")
-              //             ? [
-              //                 ConstColor.primaryGradient2,
-              //                 ConstColor.primaryGradient1,
-              //               ]
-              //             : [
-              //                 ConstColor.btnGradient1,
-              //                 ConstColor.btnGradient2,
-              //               ],
-              //       )
-              //     : GestureCircle(
-              //         onTap: () {
-              //           Get.snackbar("Oops..", "You have done for today..!",
-              //               colorText: ConstColor.white,
-              //               padding: const EdgeInsets.symmetric(
-              //                   horizontal: 25, vertical: 15),
-              //               backgroundColor: ConstColor.orange.withOpacity(0.8),
-              //               icon: Icon(
-              //                 Icons.error_outline,
-              //                 color: ConstColor.white,
-              //                 size: 30,
-              //               ));
-              //         },
-              //         isMinimize: true,
-              //         image: ConstImage.doneToday,
-              //         btnLabel: "Done for Today",
-              //         gradientColor: [
-              //           ConstColor.grey,
-              //           ConstColor.grey,
-              //         ],
-              //       ),
+                    ),
               Expanded(
                 child: Container(),
               ),
@@ -298,8 +212,8 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
                   Column(
                     children: [
                       SizedBox(
-                          height: 40,
-                          width: 40,
+                          height: 45,
+                          width: 45,
                           child: Image.asset(
                             ConstImage.clockIn,
                             color: ConstColor.grey,
@@ -307,14 +221,14 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Text(checkIn),
+                      Text(checkIn,style: textStyleW600(size.width * 0.04, ConstColor.blackText),),
                     ],
                   ),
                   Column(
                     children: [
                       SizedBox(
-                          height: 40,
-                          width: 40,
+                          height: 45,
+                          width: 45,
                           child: Image.asset(
                             ConstImage.clockOut,
                             color: ConstColor.grey,
@@ -322,7 +236,7 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Text(checkOut),
+                      Text(checkOut,style: textStyleW600(size.width * 0.04, ConstColor.blackText),),
                     ],
                   ),
                 ],
@@ -336,4 +250,60 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
       ],
     );
   }
+
+  clockInOut() async {
+    QuerySnapshot snap = await FirebaseFirestore.instance
+        .collection("Employee")
+        .where('id', isEqualTo: User.employeeId)
+        .get();
+
+    DocumentSnapshot snap2 = await FirebaseFirestore.instance
+        .collection("Employee")
+        .doc(snap.docs[0].id)
+        .collection("Record")
+        .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+        .get();
+
+    log("OUTPUT == $snap");
+    log("OUTPUT 2 == $snap2");
+
+    try {
+      String checkIn = snap2['checkIn'];
+
+      setState(() {
+        checkOut = DateFormat('hh:mm a').format(DateTime.now());
+      });
+
+      await FirebaseFirestore.instance
+          .collection("Employee")
+          .doc(snap.docs[0].id)
+          .collection("Record")
+          .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+          .update({
+        'date': Timestamp.now(),
+        'image': 'filePicked.path/CheckOut',
+        'checkIn': checkIn,
+        'checkOut': DateFormat('hh:mm a').format(DateTime.now()),
+      });
+    } catch (e) {
+      setState(() {
+        checkIn = DateFormat('hh:mm a').format(DateTime.now());
+      });
+
+      await FirebaseFirestore.instance
+          .collection("Employee")
+          .doc(snap.docs[0].id)
+          .collection("Record")
+          .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+          .set({
+        'date': Timestamp.now(),
+        'checkIn': DateFormat('hh:mm a').format(DateTime.now()),
+        'image': 'filePicked.path/CheckIn',
+        'checkOut': "--/--",
+      });
+    }
+  }
+
+
 }
+

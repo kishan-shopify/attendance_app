@@ -19,6 +19,7 @@ class ConstColor{
   static  Color black32 = const Color(0xFF323232);
   static  Color blackText = const Color(0xFF292D32);
   static  Color red =  Colors.red;
+  static  Color lightGreen =  Colors.green;
   static  Color yellow =  Colors.yellow;
   static  Color orange =  Colors.deepOrange;
 }
