@@ -128,7 +128,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 width: size.width,
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20),),
-                  color: ConstColor.white.withOpacity(0.9),
+                  color: ConstColor.white.withOpacity(0.85),
                 ),
 
                 child: SingleChildScrollView(
@@ -185,12 +185,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               AsyncSnapshot<QuerySnapshot> snapshot) {
                             if (snapshot.hasData) {
                               final snap = snapshot.data!.docs;
-                              return
-
-
-
-
-                                ListView.builder(
+                              return ListView.builder(
                                 padding: EdgeInsets.zero,
                                 itemCount: snap.length,
                                 itemBuilder: (context, index) {
@@ -230,11 +225,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                             ShowClockInOut(
                                               checkTime: snap[index]['checkIn'],
                                               textColor: (int.parse(snap[index]['checkIn'].split(':')[0]) < 9 || (int.parse(snap[index]['checkIn'].split(':')[0]) == 9 && int.parse(snap[index]['checkIn'].split(':')[1]) <= 30)) ? ConstColor.lightGreen : ConstColor.red,
+                                              // textColor: (int.parse(snap[index]['checkIn'].split(':')[0]) < 9 || (int.parse(snap[index]['checkIn'].split(':')[0]) == 9 && int.parse(snap[index]['checkIn'].split(':')[1]) <= 30)) ? ConstColor.lightGreen : ConstColor.red,
                                             ),
                                             Expanded(child: Container(),),
                                             ShowClockInOut(
                                               checkTime: snap[index]['checkOut'],
-                                              textColor: (snap[index]['checkOut'] == "--/--" ? ConstColor.blackText : ConstColor.primaryGradient2),
+                                              textColor: ConstColor.blackText,
                                             ),
                                           ],
                                         )

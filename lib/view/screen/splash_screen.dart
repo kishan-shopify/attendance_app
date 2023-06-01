@@ -7,6 +7,7 @@ import 'package:attendance_app/view/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../main.dart';
 import '../../modal/modal_class/user.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -23,6 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
+    checkDistanceFromOffice();
     _getCurrentUser();
     super.initState();
     Timer(
