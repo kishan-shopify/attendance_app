@@ -9,6 +9,7 @@ class User {
   static String panNo = " ";
   static String address = " ";
   static String mail = " ";
+  static String password = " ";
 
   static String profilePicLink = " ";
   static double lat = 0;

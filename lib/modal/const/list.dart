@@ -1,4 +1,6 @@
 
+import 'package:attendance_app/modal/modal_class/leave_class.dart';
+
 import '../modal_class/user.dart';
 import 'const_image.dart';
 
@@ -20,7 +22,7 @@ List moreOptionList = [
 
 List moreOptionListTitle = [
   "View Profile",
-  "Apply for a leave",
+  "leaves",
   "Discuss with team",
   "Change Password",
   "Notification Settings",
@@ -45,4 +47,20 @@ List profilePageListData = [
   User.aadhaarNo,
   User.panNo,
   User.address,
+];
+
+List dummyLeaveList = [
+  LeaveClass(leaveType: "CL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
+  LeaveClass(leaveType: "FL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
+  LeaveClass(leaveType: "SL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
+  LeaveClass(leaveType: "OTH", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
+  LeaveClass(leaveType: "OTH", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
+  LeaveClass(leaveType: "CL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
+  LeaveClass(leaveType: "CL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
+  LeaveClass(leaveType: "SL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
+  LeaveClass(leaveType: "SL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
+  LeaveClass(leaveType: "CL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
+  LeaveClass(leaveType: "FL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
+  LeaveClass(leaveType: "CL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
+  LeaveClass(leaveType: "FL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
 ];

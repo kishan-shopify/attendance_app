@@ -11,6 +11,7 @@ import '../../../demo.dart';
 import '../../../modal/const/const_color.dart';
 import '../../../modal/const/const_image.dart';
 import '../login_screen.dart';
+import 'apply_leave_section.dart';
 
 class MoreOptionScreen extends StatefulWidget {
   const MoreOptionScreen({Key? key}) : super(key: key);
@@ -115,11 +116,14 @@ class _MoreOptionScreenState extends State<MoreOptionScreen> {
                               if(index == 0){
                                 Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfilePage()));
                               }
-                              else if(index == 1){}
-                              else if(index == 2){}
+                              else if(index == 1){
+                                Navigator.push(context, MaterialPageRoute(builder: (_) => const ApplyLeaveScreen()));
+                              }
+                              else if(index == 2){
+                                Navigator.push(context, MaterialPageRoute(builder: (_) =>  MyHomePage()));
+                              }
                               else if(index == 3){}
                               else if(index == 4){}
-
                               if (index == 5) {
                                 logout();
                               }

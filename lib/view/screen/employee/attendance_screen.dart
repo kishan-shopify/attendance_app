@@ -42,7 +42,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               height: MediaQuery.of(context).padding.top - 5,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: size.width * 0.06),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -104,26 +104,22 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             SizedBox(
               height: size.height * 0.0008,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Attendance",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: ConstColor.blackText,
-                          fontSize: size.width * 0.07)),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Attendance",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: ConstColor.blackText,
+                        fontSize: size.width * 0.07)),
+              ],
             ),
             SizedBox(
               height: size.height * 0.02,
             ),
-            Expanded(
+            Expanded  (
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-
                 height: size.height,
                 width: size.width,
                 decoration: BoxDecoration(
@@ -137,7 +133,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       Row(
                         children: [
                           Container(
-
                             width: 75,
                             alignment: Alignment.center,
                             child: Text(
@@ -192,48 +187,51 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                   return DateFormat('MMMM').format(
                                               snap[index]['date'].toDate()) ==
                                           _month
-                                      ? Row(
-                                          children: [
-                                            Container(
-                                              width: 75,
-                                              alignment: Alignment.center,
-                                              child: Column(
-                                                children: [
-                                                  Text(
-                                                    DateFormat('dd').format(
-                                                        snap[index]['date']
-                                                            .toDate()),
-                                                    style: TextStyle(
-                                                      fontSize: size.width * 0.05,
-                                                      color: ConstColor.blackText,
-                                                      fontWeight: FontWeight.w700,
+                                      ? Padding(
+                                        padding: const EdgeInsets.only(top: 8.0),
+                                        child: Row(
+                                            children: [
+                                              Container(
+                                                width: 75,
+                                                alignment: Alignment.center,
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      DateFormat('dd').format(
+                                                          snap[index]['date']
+                                                              .toDate()),
+                                                      style: TextStyle(
+                                                        fontSize: size.width * 0.05,
+                                                        color: ConstColor.blackText,
+                                                        fontWeight: FontWeight.w700,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Text(
-                                                    DateFormat('EE').format(
-                                                        snap[index]['date']
-                                                            .toDate()),
-                                                    style: TextStyle(
-                                                      fontSize: size.width * 0.04,
-                                                      color: ConstColor.blackText,
+                                                    Text(
+                                                      DateFormat('EE').format(
+                                                          snap[index]['date']
+                                                              .toDate()),
+                                                      style: TextStyle(
+                                                        fontSize: size.width * 0.04,
+                                                        color: ConstColor.blackText,
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            Expanded(child: Container(),),
-                                            ShowClockInOut(
-                                              checkTime: snap[index]['checkIn'],
-                                              textColor: (int.parse(snap[index]['checkIn'].split(':')[0]) < 9 || (int.parse(snap[index]['checkIn'].split(':')[0]) == 9 && int.parse(snap[index]['checkIn'].split(':')[1]) <= 30)) ? ConstColor.lightGreen : ConstColor.red,
-                                              // textColor: (int.parse(snap[index]['checkIn'].split(':')[0]) < 9 || (int.parse(snap[index]['checkIn'].split(':')[0]) == 9 && int.parse(snap[index]['checkIn'].split(':')[1]) <= 30)) ? ConstColor.lightGreen : ConstColor.red,
-                                            ),
-                                            Expanded(child: Container(),),
-                                            ShowClockInOut(
-                                              checkTime: snap[index]['checkOut'],
-                                              textColor: ConstColor.blackText,
-                                            ),
-                                          ],
-                                        )
+                                              Expanded(child: Container(),),
+                                              ShowClockInOut(
+                                                checkTime: snap[index]['checkIn'],
+                                  textColor: ConstColor.blackText,
+                                                // textColor: (int.parse(snap[index]['checkIn'].split(':')[0]) < 9 || (int.parse(snap[index]['checkIn'].split(':')[0]) == 9 && int.parse(snap[index]['checkIn'].split(':')[1]) <= 30)) ? ConstColor.lightGreen : ConstColor.red,
+                                              ),
+                                              Expanded(child: Container(),),
+                                              ShowClockInOut(
+                                                checkTime: snap[index]['checkOut'],
+                                                textColor: ConstColor.blackText,
+                                              ),
+                                            ],
+                                          ),
+                                      )
                                       : const SizedBox();
                                 },
                               );

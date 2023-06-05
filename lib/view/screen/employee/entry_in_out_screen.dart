@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:attendance_app/modal/custom/gradient_button.dart';
+import 'package:attendance_app/view/screen/employee/profile_page.dart';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -143,25 +144,30 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
                     ),
                   ),
 
-                  Container(
-                    height: size.height * 0.12,
-                    width: size.width * 0.12,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.7),
-                          blurRadius: 4,
-                          offset: const Offset(2, 4), // Shadow position
-                        ),
-                      ],
-                    ),
-                    child: CircleAvatar(
-                      backgroundColor: ConstColor.primaryGradient2,
-                      radius: size.width * 0.12,
-                      child: ClipOval(
-                        child: Image.asset(
-                          "assets/images/rutvik.jpg",
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfilePage()));
+                    },
+                    child: Container(
+                      height: size.height * 0.12,
+                      width: size.width * 0.12,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.7),
+                            blurRadius: 4,
+                            offset: const Offset(2, 4), // Shadow position
+                          ),
+                        ],
+                      ),
+                      child: CircleAvatar(
+                        backgroundColor: ConstColor.primaryGradient2,
+                        radius: size.width * 0.12,
+                        child: ClipOval(
+                          child: Image.asset(
+                            "assets/images/rutvik.jpg",
+                          ),
                         ),
                       ),
                     ),
