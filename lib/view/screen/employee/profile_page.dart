@@ -37,26 +37,30 @@ class _ProfilePageState extends State<ProfilePage> {
           Column(
             children: [
               SizedBox(
-                  height:
-                  MediaQuery.of(context).padding.top + size.height * 0.04),
+                height: MediaQuery.of(context).padding.top + 15,
+              ),
               Padding(
-              padding: EdgeInsets.symmetric(horizontal: size.width * 0.06),
+                padding: EdgeInsets.symmetric(horizontal: size.width * 0.06),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomBackButton(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      iconColor: ConstColor.blackText,
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      height: size.height * 0.06,
+                      width: size.width * 0.6,
+                      child: Image.asset(
+                        "assets/images/janovis_logo.png",
+                        fit: BoxFit.contain,
+                      ),
                     ),
+
                     GestureDetector(
                       onTap: () {},
                       child: Image.asset(
-                          ConstImage.edit,
-                          height: 27,
-                          width: 27,
-                          color: ConstColor.blackText,
+                        ConstImage.edit,
+                        height: 27,
+                        width: 27,
+                        color: ConstColor.blackText,
                       ),
                     ),
                   ],
@@ -131,57 +135,40 @@ class _ProfilePageState extends State<ProfilePage> {
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
-                            Row(
-                              children: [
-                                Column(
-                                  children: [
-                                    SizedBox(
-                                      width: size.width * 0.3,
-                                      child: Text(
-                                        profilePageList[index],
-                                        style: textStyleW500(
-                                          size.width * 0.041,
-                                          ConstColor.blackText
-                                              .withOpacity(0.9),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 6,
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(
-                                  width: 15,
-                                ),
-                                Expanded(
-                                  child: SizedBox(
-                                    width: size.width,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          profilePageListData[index],
-                                          style: textStyleW500(
-                                            size.width * 0.04,
-                                            ConstColor.grey.withOpacity(0.9),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Container(
-                                          width: double.infinity,
-                                          height: 1,
-                                          color: ConstColor.grey
-                                              .withOpacity(0.9),
-                                        ),
-                                      ],
+                            SizedBox(
+                              width: size.width,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    profilePageList[index],
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontSize: size.width * 0.041,
+                                      color: ConstColor.blackText
+                                          .withOpacity(0.9),
+                                      overflow: TextOverflow.visible,
                                     ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(height: 7,),
+                                  Text(
+                                    profilePageListData[index],
+                                    style: textStyleW500(
+                                      size.width * 0.04,
+                                      ConstColor.grey.withOpacity(0.9),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 1,
+                                    color: ConstColor.grey
+                                        .withOpacity(0.9),
+                                  ),
+                                ],
+                              ),
                             ),
                             const SizedBox(
                               height: 18,

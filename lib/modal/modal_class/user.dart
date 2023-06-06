@@ -8,7 +8,10 @@ class User {
   static String aadhaarNo = " ";
   static String panNo = " ";
   static String address = " ";
+  static String bloodGroup = " ";
   static String mail = " ";
+  static String mobile = " ";
+  static String emergency = " ";
   static String password = " ";
 
   static String profilePicLink = " ";

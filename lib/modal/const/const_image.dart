@@ -21,4 +21,6 @@ class ConstImage{
   static const String logout = "assets/images/logout.png";
   static const String edit = "assets/images/edit_icon.png";
   static const String optionVertical = "assets/images/dots.png";
+  static const String holiday = "assets/images/holiday.png";
+  static const String plane = "assets/images/plane.png";
 }

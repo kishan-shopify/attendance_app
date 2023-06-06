@@ -51,6 +51,9 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
         User.panNo = doc['pan'];
         User.address = doc['address'];
         User.password = doc['password'];
+        User.bloodGroup = doc['bloodgroup'];
+        User.mobile = doc['mobile'];
+        User.emergency = doc['emergency'];
       });
 
 

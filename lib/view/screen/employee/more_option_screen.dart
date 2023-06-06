@@ -11,7 +11,7 @@ import '../../../demo.dart';
 import '../../../modal/const/const_color.dart';
 import '../../../modal/const/const_image.dart';
 import '../login_screen.dart';
-import 'apply_leave_section.dart';
+import 'leave_section.dart';
 
 class MoreOptionScreen extends StatefulWidget {
   const MoreOptionScreen({Key? key}) : super(key: key);
@@ -95,8 +95,7 @@ class _MoreOptionScreenState extends State<MoreOptionScreen> {
             ),
             Expanded(
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 25,),
                 height: size.height,
                 width: size.width,
                 decoration: BoxDecoration(
@@ -117,10 +116,10 @@ class _MoreOptionScreenState extends State<MoreOptionScreen> {
                                 Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfilePage()));
                               }
                               else if(index == 1){
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => const ApplyLeaveScreen()));
+                                Navigator.push(context, MaterialPageRoute(builder: (_) => const LeaveSection()));
                               }
                               else if(index == 2){
-                                Navigator.push(context, MaterialPageRoute(builder: (_) =>  MyHomePage()));
+
                               }
                               else if(index == 3){}
                               else if(index == 4){}
@@ -128,60 +127,55 @@ class _MoreOptionScreenState extends State<MoreOptionScreen> {
                                 logout();
                               }
                             },
-                            child: Row(
-                              children: [
-                                Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 25,
-                                      width: 30,
-                                      child: Image.asset(
-                                        moreOptionList[index],
-                                        fit: BoxFit.contain,
-                                        color: ConstColor.grey.withOpacity(0.9),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15.0),
+                              child: Column(
+
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              height: 22,
+                                              width: 30,
+                                              child: Image.asset(
+                                                moreOptionList[index],
+                                                fit: BoxFit.contain,
+                                                color: ConstColor.grey.withOpacity(0.9),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 15,
+                                            ),
+                                            Expanded(
+                                              child: SizedBox(
+                                                width: size.width,
+                                                child: Text(
+                                                  moreOptionListTitle[index],
+                                                  style: textStyleW500(
+                                                    size.width * 0.044,
+                                                    ConstColor.blackText.withOpacity(0.9),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      height: 6,
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(
-                                  width: 15,
-                                ),
-                                Expanded(
-                                  child: SizedBox(
-                                    width: size.width,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          moreOptionListTitle[index],
-                                          style: textStyleW500(
-                                            size.width * 0.04,
-                                            ConstColor.grey.withOpacity(0.9),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Container(
-                                          width: double.infinity,
-                                          height: 1,
-                                          color:
-                                              ConstColor.grey.withOpacity(0.9),
-                                        ),
-                                      ],
-                                    ),
+                                       Icon(Icons.arrow_forward_ios_rounded,color: ConstColor.grey,size: 15,)
+
+
+                                    ],
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(height: 8,),
+                                  Container(height: 1,width: double.infinity,color: ConstColor.grey,)
+                                ],
+                              ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 18,
-                          ),
+
                         ],
                       );
                     }),

@@ -22,7 +22,7 @@ List moreOptionList = [
 
 List moreOptionListTitle = [
   "View Profile",
-  "leaves",
+  "Leaves",
   "Discuss with team",
   "Change Password",
   "Notification Settings",
@@ -30,23 +30,29 @@ List moreOptionListTitle = [
 ];
 
 List profilePageList = [
-  "Employee ID :-",
-  "Email Id :-",
-  "Birth Date :-",
-  "Joining Date :-",
-  "Aadhaar No :-",
-  "PAN No :-",
-  "Address :-"
+  "Employee ID :",
+  "Email Id :",
+  "Mobile No :",
+  "Birth Date :",
+  "Joining Date :",
+  "Blood Group :",
+  "Aadhaar No :",
+  "PAN No :",
+  "Address :",
+  "Emergency No :"
 ];
 
 List profilePageListData = [
   User.employeeId,
   User.mail,
+  User.mobile,
   User.birthdate,
   User.joiningDate,
+  User.bloodGroup,
   User.aadhaarNo,
   User.panNo,
   User.address,
+  User.emergency,
 ];
 
 List dummyLeaveList = [
