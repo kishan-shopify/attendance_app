@@ -93,7 +93,7 @@ TextStyle textStyleW700(double size,Color color){
   return TextStyle(
       fontFamily: fontFamily,
       fontWeight: FontWeight.w700,
-      letterSpacing: 1.2,
+
       fontSize: size,
       color: color
   );

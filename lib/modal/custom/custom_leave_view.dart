@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../const/const_color.dart';
 import '../const/const_image.dart';
 import '../const/text_style.dart';
-import 'leave_page_label.dart';
 
 class LeaveView extends StatelessWidget {
   final String leaveType;
@@ -24,44 +23,57 @@ class LeaveView extends StatelessWidget {
     final Size size = MediaQuery.of(context).size;
     return Column(
       children: [
-        Row(
-          children: [
-            LeavePageLabel(
-              isWidth50: true,
-              label: leaveType,
-            ),
-            Expanded(child: Container()),
-            LeavePageLabel(
-              label: fromDate,
-            ),
-            Expanded(child: Container()),
-            LeavePageLabel(
-              label: toDate,
-            ),
-            GestureDetector(
-              child: Container(
-                padding: const EdgeInsets.only(left: 5),
-                height: 18,
-                width: 15,
-                child: Image.asset(ConstImage.optionVertical,fit: BoxFit.cover,),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            )
-          ],
-        ),
-        const SizedBox(
-          height: 15,
-        ),
         Container(
-          height: 1,
-          width: double.infinity,
-          color: ConstColor.grey.withOpacity(0.5),
+          width: size.width,
+          height: size.height * 0.06,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12), color: ConstColor.white),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                width: size.width * 0.12,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      bottomLeft: Radius.circular(12)),
+                  color: ConstColor.primary,
+                ),
+                child: Text(
+                  leaveType,
+                  style:
+                      textStyleW600(size.width * 0.043, ConstColor.blackText),
+                ),
+              ),
+              Container(
+                  alignment: Alignment.center,
+                  width: size.width * 0.65,
+                  child: Text(
+                    "From $fromDate - $toDate",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style:
+                        textStyleW600(size.width * 0.037, ConstColor.blackText),
+                  )),
+              Row(
+                children: [
+                  Image.asset(
+                    ConstImage.view,
+                    height: 20,
+                    width: 20,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
         SizedBox(
-          height: 20,
-        )
+          height: 10,
+        ),
       ],
     );
   }

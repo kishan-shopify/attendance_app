@@ -1,10 +1,17 @@
-import 'package:attendance_app/modal/custom/back_button.dart';
-import 'package:flutter/material.dart';
+import 'dart:io';
 
+import 'package:attendance_app/modal/const/text_style.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../controller/home_screen_controller.dart';
 import '../../../modal/const/const_color.dart';
 import '../../../modal/const/const_image.dart';
 import '../../../modal/const/list.dart';
-import '../../../modal/const/text_style.dart';
+import '../../../modal/custom/app_bar.dart';
 import '../../../modal/modal_class/user.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -15,173 +22,229 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final HomeScreenController homeController = Get.put(HomeScreenController());
+
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery
-        .of(context)
-        .size;
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
         children: [
-          RotatedBox(
-            quarterTurns: 2,
-            child: SizedBox(
-              height: double.infinity,
-              width: double.infinity,
-              child: Image.asset(
-                ConstImage.background,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Column(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).padding.top + 15,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: size.width * 0.06),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
+            height: double.infinity,
+            width: double.infinity,
+            color: ConstColor.primaryBackGround,
+            child: Column(
+              children: [
+                SizedBox(
+                  height:
+                      MediaQuery.of(context).padding.top + size.height * 0.02,
+                ),
+                CustomAppBar(
+                  onTap: () {
+                    homeController.notificationVisible.value =
+                        !homeController.notificationVisible.value;
+                  },
+                ),
+                SizedBox(
+                  height: size.height * 0.04,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      height: size.height * 0.06,
-                      width: size.width * 0.6,
-                      child: Image.asset(
-                        "assets/images/janovis_logo.png",
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-
-                    GestureDetector(
-                      onTap: () {},
-                      child: Image.asset(
-                        ConstImage.edit,
-                        height: 27,
-                        width: 27,
-                        color: ConstColor.blackText,
-                      ),
+                    Text(
+                      "My Profile",
+                      style: textStyleW700(
+                        size.width * 0.07,
+                          ConstColor.blackText,
+                          ),
                     ),
                   ],
                 ),
-              ),
-              SizedBox(height: size.height * 0.04,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    height: size.height * 0.15,
-                    width: size.width * 0.35,
+                SizedBox(
+                  height: size.height * 0.1,
+                ),
+                Container(
+                  width: size.width,
+                  height: size.height * 0.2,
+                  decoration: BoxDecoration(
+                    color: ConstColor.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: size.height * 0.09,
+                      ),
+                      Text(
+                        User.name,
+                        style: TextStyle(
+                            fontSize: size.width * 0.055,
+                            color: ConstColor.blackText,
+                            fontWeight: FontWeight.w900),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        User.designation,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            // size.width * 0.042,
+                            fontWeight: FontWeight.w600,
+                            color: ConstColor.blackText.withOpacity(0.6)),
+                      ),
+                      Text(
+                        "Joined from ${User.joiningDate}",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            // size.width * 0.042,
+                            fontWeight: FontWeight.w600,
+                            color: ConstColor.blackText.withOpacity(0.6)),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                Expanded(
+                  child: Container(
+                    height: size.height,
+                    width: size.width,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.7),
-                          blurRadius: 4,
-                          offset: const Offset(2, 4), // Shadow position
-                        ),
-                      ],
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        topLeft: Radius.circular(10),
+                      ),
+                      color: ConstColor.white,
                     ),
+                    child: ListView.builder(
+                        padding: EdgeInsets.only(top: 20),
+                        itemCount: profilePageList.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 25),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  width: size.width,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        profilePageList[index],
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          fontSize: size.width * 0.041,
+                                          color: ConstColor.blackText
+                                              .withOpacity(0.9),
+                                          overflow: TextOverflow.visible,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        profilePageListData[index],
+                                        style: TextStyle(
+                                            fontSize: size.width * 0.04,
+                                            fontWeight: FontWeight.w600,
+                                            color: ConstColor.blackText
+                                                .withOpacity(0.6)),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Container(
+                                        width: double.infinity,
+                                        height: 1,
+                                        color: ConstColor.grey.withOpacity(0.9),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: InkWell(
+              onTap: () {},
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).padding.top +
+                        size.height * 0.175,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      pickUploadProfilePic();
+                    },
                     child: CircleAvatar(
-                      radius: size.width * 0.35,
-                      child: ClipOval(
-                        child: Image.asset(
-                          "assets/images/rutvik.jpg",
+                      backgroundColor: Colors.white,
+                      // backgroundColor: Colors.transparent,
+                      radius: size.width * 0.18,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ClipOval(
+                          child: (User.profile == " ")
+                              ? Image.asset(
+                                  ConstImage.rutvik,
+                                )
+                              : Image.network(
+                                  User.profile,
+                                ),
                         ),
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              Column(
-                children: [
-                  Text(
-                    User.name,
-                    style:
-                    textStyleW600(size.width * 0.06, ConstColor.blackText),
-                  ),
-                  Text(
-                    User.designation,
-                    style: textStyleW500(size.width * 0.038,
-                        ConstColor.blackText.withOpacity(0.8)),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                height: size.height * 0.025,
-              ),
-              Expanded(
-                child: Container(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                  height: size.height,
-                  width: size.width,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(20),
-                      topLeft: Radius.circular(20),
-                    ),
-                    color: ConstColor.white.withOpacity(0.85),
-                  ),
-                  child: ListView.builder(
-                      itemCount: profilePageList.length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            SizedBox(
-                              width: size.width,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    profilePageList[index],
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                      fontSize: size.width * 0.041,
-                                      color: ConstColor.blackText
-                                          .withOpacity(0.9),
-                                      overflow: TextOverflow.visible,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 7,),
-                                  Text(
-                                    profilePageListData[index],
-                                    style: textStyleW500(
-                                      size.width * 0.04,
-                                      ConstColor.grey.withOpacity(0.9),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    height: 1,
-                                    color: ConstColor.grey
-                                        .withOpacity(0.9),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 18,
-                            ),
-                          ],
-                        );
-                      }),
-                ),
-              ),
-            ],
+            ),
           ),
         ],
       ),
     );
+  }
+
+  void pickUploadProfilePic() async {
+    final image = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 256,
+      maxWidth: 256,
+      imageQuality: 90,
+    );
+    String fileName = "${User.name}_profile";
+
+    Reference reference = FirebaseStorage.instance.ref();
+    Reference referenceImages = reference.child("profileImages");
+
+    Reference referenceImagesUpload = referenceImages.child(fileName);
+    await referenceImagesUpload.putFile(File(image!.path));
+
+    referenceImagesUpload.getDownloadURL().then((value) async {
+      setState(() {
+        User.profile = value;
+      });
+
+      await FirebaseFirestore.instance
+          .collection("Employee")
+          .doc(User.id)
+          .update({'profile': value});
+    });
   }
 }

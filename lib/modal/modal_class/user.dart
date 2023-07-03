@@ -14,7 +14,7 @@ class User {
   static String emergency = " ";
   static String password = " ";
 
-  static String profilePicLink = " ";
+  static String profile = " ";
   static double lat = 0;
   static double long = 0;
   static bool canEdit = true;

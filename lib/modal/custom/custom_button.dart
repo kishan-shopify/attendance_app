@@ -13,8 +13,7 @@ class CustomButton extends StatelessWidget {
       required this.btnLabel,
       required this.onTap,
       required this.btnColor,
-      required this.labelColor
-      })
+      required this.labelColor})
       : super(key: key);
 
   @override
@@ -25,13 +24,13 @@ class CustomButton extends StatelessWidget {
         onTap();
       },
       child: Container(
-        height: 60,
-        width: size.width,
         decoration: BoxDecoration(
           color: btnColor,
-          borderRadius: const BorderRadius.all(Radius.circular(14)),
-
+          borderRadius: BorderRadius.circular(14)
         ),
+       padding: EdgeInsets.symmetric(vertical: size.height * 0.013),
+        width: size.width,
+
         child: Center(
           child: Text(btnLabel,
               style: textStyleW700(size.width * 0.048, labelColor)),

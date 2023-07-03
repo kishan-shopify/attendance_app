@@ -35,6 +35,7 @@ class CustomTextField extends StatelessWidget {
             ),
             Expanded(
                 child: TextField(
+
               controller: controller,
               obscureText: isPassword,
               maxLength: maxLength,
@@ -45,6 +46,7 @@ class CustomTextField extends StatelessWidget {
               cursorColor: ConstColor.blackText,
               style: textStyleW500(size.width * 0.045, ConstColor.blackText),
               decoration: InputDecoration(
+
                 hintText: label,
                 counterText: "",
                 border: InputBorder.none,

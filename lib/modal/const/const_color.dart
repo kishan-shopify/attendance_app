@@ -2,14 +2,11 @@
 import 'package:flutter/material.dart';
 
 class ConstColor{
+
   ConstColor._();
 
-  static  Color primary = const Color(0xFF37474F);
-  static  Color primaryGradient1 = const Color(0xFF1661bf);
-  static  Color primaryGradient2 = const Color(0xFF8f85db);
-  static  Color primaryGradient3 = const Color(0xFF678ce0);
-  static  Color btnGradient1 = const Color(0xFF983094);
-  static  Color btnGradient2 = const Color(0xFFe93472);
+  static  Color primary = const Color(0xFFF7C343);
+  static  Color primaryBackGround = const Color(0xFFFEF8E8);
   static  Color white =  Colors.white;
   static  Color grey =  Colors.grey;
   static  Color blackBorder =  Colors.black45;

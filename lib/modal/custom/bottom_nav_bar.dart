@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import '../../controller/home_screen_controller.dart';
+
 import '../const/const_color.dart';
 import '../const/list.dart';
+import '../../controller/home_screen_controller.dart';
 
 class BottomNavBar extends StatelessWidget {
   final Size size;
@@ -22,10 +22,12 @@ class BottomNavBar extends StatelessWidget {
     return Container(
       alignment: Alignment.center,
       height: 70,
-      decoration:  BoxDecoration(
+      decoration: BoxDecoration(
         color: ConstColor.white,
         borderRadius: const BorderRadius.only(
-            topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+          topRight: Radius.circular(20),
+          topLeft: Radius.circular(20),
+        ),
         boxShadow: const [
           BoxShadow(
             color: Colors.black26,
@@ -35,7 +37,6 @@ class BottomNavBar extends StatelessWidget {
         ],
       ),
       child: ListView.builder(
-
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -47,13 +48,16 @@ class BottomNavBar extends StatelessWidget {
                 onTap(index);
               },
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 30),
+                alignment: Alignment.center,
+                width: 90,
+                height: 50,
                 child: Image.asset(
-                  bottomNavBarItems[index],
+                  controller.tappedIndex.value == index
+                      ? trueBottomNavBarItems[index]
+                      : bottomNavBarItems[index],
+                  height: (controller.tappedIndex.value == index) ? 45 : 25,
+                  width: (controller.tappedIndex.value == index) ? 45 : 25,
                   fit: BoxFit.contain,
-                  height: 30,
-                  width: 30,
-                  color: (controller.tappedIndex.value == index) ? ConstColor.btnGradient1 : Colors.grey.withOpacity(1),
                 ),
               ),
             ),

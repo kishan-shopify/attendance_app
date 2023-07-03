@@ -1,3 +1,4 @@
+import 'package:attendance_app/view/screen/employee/forgot_password.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,14 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
         height: double.infinity,
         width: double.infinity,
         padding: EdgeInsets.symmetric(horizontal: size.width * 0.07),
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-              ConstColor.primaryGradient1,
-              ConstColor.primaryGradient2,
-            ])),
+        color: ConstColor.primaryBackGround,
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -43,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
                   child: Image.asset(
                     ConstImage.janovisLogo,
-                    color: Colors.white,
+                    color: Colors.black,
                     fit: BoxFit.fitWidth,
                     width: 200,
                     height: 200,
@@ -74,12 +68,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: size.height * 0.03,
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+
+                            },
                             child: Text(
                               "Forgot Password?",
                               style: TextStyle(
                                 decoration: TextDecoration.underline,
-                                color: ConstColor.white,
+                                color: ConstColor.blackText,
                               ),
                             ),
                           ),
@@ -87,11 +83,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: size.height * 0.03,
                           ),
                           CustomButton(
-                            onTap: () {
-                              FocusScope.of(context).unfocus();},
                             btnLabel: "LOGIN",
-                            btnColor: ConstColor.white,
-                            labelColor: ConstColor.btnGradient1,
+                            onTap: () {
+                              FocusScope.of(context).unfocus();
+                            },
+                            btnColor: ConstColor.primary,
+                            labelColor: ConstColor.blackText,
                           ),
                           const SizedBox(
                             height: 7,
@@ -102,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Text(
                                 "Are you Employee?  ",
                                 style: TextStyle(
-                                    color: ConstColor.white,
+                                    color: ConstColor.blackText,
                                     fontSize: size.width * 0.04),
                               ),
                               GestureDetector(
@@ -114,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   "Click here",
                                   style: TextStyle(
                                       decoration: TextDecoration.underline,
-                                      color: ConstColor.white,
+                                      color: ConstColor.blackText,
                                       fontSize: size.width * 0.04,
                                       letterSpacing: 1),
                                 ),
@@ -144,26 +141,29 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: size.height * 0.03,
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (_) => const ForgotPasswordScreen()));
+                            },
                             child: Text(
                               "Forgot Password?",
                               style: TextStyle(
                                 decoration: TextDecoration.underline,
-                                color: ConstColor.white,
+                                color: ConstColor.blackText,
                               ),
                             ),
                           ),
                           SizedBox(
                             height: size.height * 0.03,
                           ),
+
                           CustomButton(
+                            btnLabel: "LOGIN",
                             onTap: () {
                               FocusScope.of(context).unfocus();
                               controller.employeeValidation(context);
                             },
-                            btnLabel: "LOGIN",
-                            btnColor: ConstColor.white,
-                            labelColor: ConstColor.btnGradient1,
+                            btnColor: ConstColor.primary,
+                            labelColor: ConstColor.blackText,
                           ),
                           const SizedBox(
                             height: 7,
@@ -174,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Text(
                                 "Are you Admin?  ",
                                 style: TextStyle(
-                                    color: ConstColor.white,
+                                    color: ConstColor.blackText,
                                     fontSize: size.width * 0.04),
                               ),
                               GestureDetector(
@@ -186,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   "Click here",
                                   style: TextStyle(
                                       decoration: TextDecoration.underline,
-                                      color: ConstColor.white,
+                                      color: ConstColor.blackText,
                                       fontSize: size.width * 0.04,
                                       letterSpacing: 1),
                                 ),

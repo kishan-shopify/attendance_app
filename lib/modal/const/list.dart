@@ -1,23 +1,30 @@
 
-import 'package:attendance_app/modal/modal_class/leave_class.dart';
+import '../modal_class/leave_class.dart';
+import '../modal_class/notification_class.dart';
 
 import '../modal_class/user.dart';
 import 'const_image.dart';
 
 List bottomNavBarItems = [
   ConstImage.home,
-  ConstImage.attendance,
+  ConstImage.calendar2,
   ConstImage.notification,
-  ConstImage.option,
+  ConstImage.menu,
 ];
+
+List trueBottomNavBarItems = [
+  ConstImage.homeFill,
+  ConstImage.calendar2Fill,
+  ConstImage.notificationFill,
+  ConstImage.menuFill,
+];
+
 
 List moreOptionList = [
   ConstImage.profile,
-  ConstImage.leaves,
   ConstImage.team,
   ConstImage.changePassword,
   ConstImage.notificationSetting,
-  ConstImage.logout,
 ];
 
 List moreOptionListTitle = [
@@ -34,7 +41,6 @@ List profilePageList = [
   "Email Id :",
   "Mobile No :",
   "Birth Date :",
-  "Joining Date :",
   "Blood Group :",
   "Aadhaar No :",
   "PAN No :",
@@ -47,7 +53,6 @@ List profilePageListData = [
   User.mail,
   User.mobile,
   User.birthdate,
-  User.joiningDate,
   User.bloodGroup,
   User.aadhaarNo,
   User.panNo,
@@ -69,4 +74,19 @@ List dummyLeaveList = [
   LeaveClass(leaveType: "FL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
   LeaveClass(leaveType: "CL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
   LeaveClass(leaveType: "FL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
+];
+
+List dummyNotificationList = [
+  NotificationClass(icon: ConstImage.checkInNotification, title: "Hey, You're getting late, Please hurry up and check in", time: ""),
+  NotificationClass(icon: ConstImage.checkOutNotification, title: "Hey, It's time to checkout", time: ""),
+  NotificationClass(icon: ConstImage.leaveNotification, title: "Hey, Your leave is approved", time: ""),
+  NotificationClass(icon: ConstImage.holidayNotification, title: "Hey, tomorrow is the holiday", time: ""),
+  NotificationClass(icon: ConstImage.checkInNotification, title: "Hey, You're getting late, Please hurry up and check in", time: ""),
+  NotificationClass(icon: ConstImage.checkOutNotification, title: "Hey, It's time to checkout", time: ""),
+  NotificationClass(icon: ConstImage.leaveNotification, title: "Hey, Your leave is approved", time: ""),
+  NotificationClass(icon: ConstImage.holidayNotification, title: "Hey, tomorrow is the holiday", time: ""),
+  NotificationClass(icon: ConstImage.checkInNotification, title: "Hey, You're getting late, Please hurry up and check in", time: ""),
+  NotificationClass(icon: ConstImage.checkOutNotification, title: "Hey, It's time to checkout", time: ""),
+  NotificationClass(icon: ConstImage.leaveNotification, title: "Hey, Your leave is approved", time: ""),
+  NotificationClass(icon: ConstImage.holidayNotification, title: "Hey, tomorrow is the holiday", time: ""),
 ];

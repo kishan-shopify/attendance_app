@@ -1,17 +1,13 @@
-import 'package:attendance_app/controller/home_screen_controller.dart';
-import 'package:attendance_app/modal/const/list.dart';
-import 'package:attendance_app/modal/const/text_style.dart';
-import 'package:attendance_app/modal/modal_class/user.dart';
-import 'package:attendance_app/view/screen/employee/profile_page.dart';
+
+import 'package:attendance_app/view/screen/employee/leave_section.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../demo.dart';
+import '../../../controller/home_screen_controller.dart';
 import '../../../modal/const/const_color.dart';
 import '../../../modal/const/const_image.dart';
-import '../login_screen.dart';
-import 'leave_section.dart';
+import '../../../modal/modal_class/user.dart';
+import 'profile_page.dart';
 
 class MoreOptionScreen extends StatefulWidget {
   const MoreOptionScreen({Key? key}) : super(key: key);
@@ -26,176 +22,313 @@ class _MoreOptionScreenState extends State<MoreOptionScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-
     return Stack(
       children: [
-        RotatedBox(
-          quarterTurns: 2,
-          child: SizedBox(
-            height: double.infinity,
-            width: double.infinity,
-            child: Image.asset(
-              ConstImage.background,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
         Column(
           children: [
-            SizedBox(
-                height:
-                    MediaQuery.of(context).padding.top + size.height * 0.04),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  height: size.height * 0.15,
-                  width: size.width * 0.35,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.7),
-                        blurRadius: 4,
-                        offset: const Offset(2, 4), // Shadow position
+                Text("Profile",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: ConstColor.blackText,
+                        fontSize: size.width * 0.07)),
+              ],
+            ),
+            SizedBox(
+              height: size.height * 0.1,
+            ),
+            Container(
+              width: size.width,
+              height: size.height * 0.2,
+              decoration: BoxDecoration(
+                color: ConstColor.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: size.height * 0.09,
+                  ),
+                  Text(
+                    User.name,
+                    style: TextStyle(
+                        fontSize: size.width * 0.055,
+                        color: ConstColor.blackText,
+                        fontWeight: FontWeight.w900),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    User.designation,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        // size.width * 0.042,
+                        fontWeight: FontWeight.w600,
+                        color: ConstColor.blackText.withOpacity(0.6)),
+                  ),
+                  Text(
+                    "Joined from ${User.joiningDate}",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        // size.width * 0.042,
+                        fontWeight: FontWeight.w600,
+                        color: ConstColor.blackText.withOpacity(0.6)),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: size.height * 0.015,
+            ),
+            Container(
+              width: size.width,
+              height: size.height * 0.12,
+              decoration: BoxDecoration(
+                color: ConstColor.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Late",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            // size.width * 0.042,
+                            fontWeight: FontWeight.w600,
+                            color: ConstColor.blackText.withOpacity(0.5)),
+                      ),
+                      Text(
+                        "${homeController.lateComing}",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: size.width * 0.05,
+                            // size.width * 0.042,
+                            fontWeight: FontWeight.w600,
+                            color: ConstColor.blackText.withOpacity(0.7)),
                       ),
                     ],
                   ),
-                  child: CircleAvatar(
-                    radius: size.width * 0.35,
-                    child: ClipOval(
-                      child: Image.asset(
-                        "assets/images/rutvik.jpg",
+                  Container(
+                    height: 25,
+                    width: 1,
+                    color: ConstColor.primary,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Attendance",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            // size.width * 0.042,
+                            fontWeight: FontWeight.w600,
+                            color: ConstColor.blackText.withOpacity(0.5)),
                       ),
+                      Text(
+                        "${homeController.presentDays.length}",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: size.width * 0.05,
+                            // size.width * 0.042,
+                            fontWeight: FontWeight.w600,
+                            color: ConstColor.blackText.withOpacity(0.7)),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    height: 25,
+                    width: 1,
+                    color: ConstColor.primary,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Early",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            // size.width * 0.042,
+                            fontWeight: FontWeight.w600,
+                            color: ConstColor.blackText.withOpacity(0.5)),
+                      ),
+                      Text(
+                        "${homeController.earlyGoing}",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: size.width * 0.05,
+                            // size.width * 0.042,
+                            fontWeight: FontWeight.w600,
+                            color: ConstColor.blackText.withOpacity(0.7)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: size.height * 0.015,
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 10),
+              width: size.width,
+              height: size.height * 0.06,
+              decoration: BoxDecoration(
+                color: ConstColor.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Image.asset(ConstImage.general),
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  Text(
+                    "General Settings",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: size.width * 0.042,
+                        // size.width * 0.042,
+                        fontWeight: FontWeight.w600,
+                        color: ConstColor.blackText.withOpacity(0.7)),
+                  ),
+                  Expanded(child: Container()),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Image.asset(ConstImage.forward),
+                  ),
+                ],
+              ),
+            ),
+            // SizedBox(
+            //   height: size.height * 0.015,
+            // ),
+            // Container(
+            //   padding: const EdgeInsets.symmetric(vertical: 7,horizontal: 10),
+            //   width: size.width,
+            //   height: size.height * 0.06,
+            //   decoration: BoxDecoration(
+            //     color: ConstColor.white,
+            //     borderRadius: BorderRadius.circular(10),
+            //   ),
+            //   child: Row(
+            //     children: [
+            //       Padding(
+            //         padding: const EdgeInsets.symmetric(vertical: 2),
+            //         child: Image.asset(ConstImage.calendar),
+            //       ),
+            //       const SizedBox(width: 15,),
+            //       Text(
+            //         "My Attendance",
+            //         maxLines: 1,
+            //         overflow: TextOverflow.ellipsis,
+            //         style: TextStyle(
+            //             fontSize: size.width * 0.042,
+            //             // size.width * 0.042,
+            //             fontWeight: FontWeight.w600,
+            //             color: ConstColor.blackText.withOpacity(0.7)),
+            //       ),
+            //       Expanded(child: Container()),
+            //       Padding(
+            //         padding: const EdgeInsets.symmetric(vertical: 10.0),
+            //         child: Image.asset(ConstImage.forward),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            SizedBox(
+              height: size.height * 0.015,
+            ),
+            GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (_) => LeaveSection()));
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 10),
+                width: size.width,
+                height: size.height * 0.06,
+                decoration: BoxDecoration(
+                  color: ConstColor.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: Image.asset(ConstImage.leave),
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    Text(
+                      "Apply Leave",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: size.width * 0.042,
+                          // size.width * 0.042,
+                          fontWeight: FontWeight.w600,
+                          color: ConstColor.blackText.withOpacity(0.7)),
+                    ),
+                    Expanded(child: Container()),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: Image.asset(ConstImage.forward),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        Align(
+          alignment: Alignment.topCenter,
+          child: InkWell(
+            onTap: () {
+
+            },
+            child: Column(
+              children: [
+                SizedBox(height: size.height * 0.05,),
+                CircleAvatar(
+                  backgroundColor: ConstColor.white,
+                  radius: size.width * 0.18,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipOval(
+                      child: (User.profile == " ")
+                          ? Image.asset(
+                              ConstImage.rutvik,
+                            )
+                          : Image.network(User.profile),
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            Column(
-              children: [
-                Text( User.name,
-                  style: textStyleW600(size.width * 0.06, ConstColor.blackText),
-                ),
-                Text(
-                  User.designation,
-                  style: textStyleW500(size.width * 0.038,
-                      ConstColor.blackText.withOpacity(0.8)),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              height: size.height * 0.025,
-            ),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 25,),
-                height: size.height,
-                width: size.width,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(20),
-                    topLeft: Radius.circular(20),
-                  ),
-                  color: ConstColor.white.withOpacity(0.85),
-                ),
-                child: ListView.builder(
-                    itemCount: moreOptionList.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              if(index == 0){
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfilePage()));
-                              }
-                              else if(index == 1){
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => const LeaveSection()));
-                              }
-                              else if(index == 2){
-
-                              }
-                              else if(index == 3){}
-                              else if(index == 4){}
-                              if (index == 5) {
-                                logout();
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 15.0),
-                              child: Column(
-
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Row(
-                                          children: [
-                                            SizedBox(
-                                              height: 22,
-                                              width: 30,
-                                              child: Image.asset(
-                                                moreOptionList[index],
-                                                fit: BoxFit.contain,
-                                                color: ConstColor.grey.withOpacity(0.9),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 15,
-                                            ),
-                                            Expanded(
-                                              child: SizedBox(
-                                                width: size.width,
-                                                child: Text(
-                                                  moreOptionListTitle[index],
-                                                  style: textStyleW500(
-                                                    size.width * 0.044,
-                                                    ConstColor.blackText.withOpacity(0.9),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                       Icon(Icons.arrow_forward_ios_rounded,color: ConstColor.grey,size: 15,)
-
-
-                                    ],
-                                  ),
-                                  const SizedBox(height: 8,),
-                                  Container(height: 1,width: double.infinity,color: ConstColor.grey,)
-                                ],
-                              ),
-                            ),
-                          ),
-
-                        ],
-                      );
-                    }),
-              ),
-            ),
-          ],
+          ),
         ),
       ],
     );
   }
 
-  logout() async {
-    var sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.clear().then((value) => {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => const LoginScreen())),
-          setState(() {
-            homeController.newIndex.value = 0;
-            homeController.tappedIndex.value = 0;
-          }),
-        });
-  }
+
 }
