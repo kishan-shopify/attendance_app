@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:attendance_app/view/screen/employee/home_screen.dart';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -20,6 +19,7 @@ import '../../../modal/const/const_color.dart';
 import '../../../modal/const/const_image.dart';
 import '../../../modal/const/text_style.dart';
 import '../../../modal/modal_class/user.dart';
+import 'home_screen.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});

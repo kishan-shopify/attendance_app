@@ -15,13 +15,20 @@ class AttendanceScreen extends StatefulWidget {
 }
 
 class _AttendanceScreenState extends State<AttendanceScreen> {
-  final HomeScreenController homeController = Get.put(HomeScreenController());
+  final HomeScreenController homeController = Get.put(HomeScreenController());      
+  var month;
+  DateTime currentDate = DateTime.now();
 
-  final String _month = DateFormat('MMMM').format(DateTime.now());
+  void updateMonth(int offset) {
+    currentDate = DateTime(currentDate.year, currentDate.month + offset);
+    setState(() {});
+    month = DateFormat('MMMM').format(currentDate);
+    homeController.fetchPresentDays(User.id, month);
+  }
 
   @override
   void initState() {
-    homeController.fetchPresentDays(User.id, _month);
+    updateMonth(0);
     super.initState();
   }
 
@@ -46,144 +53,203 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         SizedBox(
           height: size.height * 0.04,
         ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 50,
+            ),
+            GestureDetector(
+                onTap: () {
+                  updateMonth(-1);
+                },
+                child: Icon(Icons.arrow_back)),
+            Expanded(child: Container()),
+            Text(
+              DateFormat('MMMM').format(currentDate),
+              // _month,
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                color: ConstColor.blackText,
+                fontSize: size.width * 0.05,
+              ),
+            ),
+            Expanded(child: Container()),
+            GestureDetector(
+                onTap: () {
+                  updateMonth(1);
+                },
+                child: Icon(Icons.arrow_forward)),
+            SizedBox(
+              width: 50,
+            ),
+          ],
+        ),
+        SizedBox(
+          height: size.height * 0.02,
+        ),
         Expanded(
           child: Container(
             height: size.height / 1.5,
             child: EasyRefresh(
               onRefresh: () async {
-                // Fetch the present days again
-                homeController.fetchPresentDays(User.id, _month);
+                homeController.fetchPresentDays(User.id, month);
               },
-              child: Obx(
-                () => ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: homeController.presentDays.length,
-                  itemBuilder: (context, index) {
-                    final doc = homeController.presentDays[index];
-                    final date = doc['date'].toDate();
-                    final checkIn = doc['checkIn'];
-                    final checkOut = doc['checkOut'];
-                    return Container(
-                      width: size.width,
-                      margin: const EdgeInsets.only(bottom: 10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: ConstColor.white),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.symmetric(vertical: 10),
-                                  padding: const EdgeInsets.symmetric(vertical: 5),
-                                  width: 70,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14),
-                                      color: ConstColor.primaryBackGround),
-                                  alignment: Alignment.center,
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        DateFormat('dd').format(date),
-                                        style: TextStyle(
-                                          fontSize: size.width * 0.045,
-                                          color: ConstColor.blackText,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                      Text(
-                                        DateFormat('EE').format(date),
-                                        style: TextStyle(
-                                          fontSize: size.width * 0.04,
-                                          color: ConstColor.blackText,
-                                        ),
-                                      ),
-                                    ],
+              child: Obx(() {
+                if (homeController.presentDays.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No Data Found',
+                      style: TextStyle(
+                        fontSize: size.width * 0.05,
+                        fontWeight: FontWeight.w700,
+                        color: ConstColor.blackText,
+                      ),
+                    ),
+                  );
+                } else {
+                  return ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: homeController.presentDays.length,
+                    itemBuilder: (context, index) {
+                      final doc = homeController.presentDays[index];
+                      final date = doc['date'].toDate();
+                      final checkIn = doc['checkIn'];
+                      final checkOut = doc['checkOut'];
+                      return Container(
+                        width: size.width,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: ConstColor.white),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  const SizedBox(
+                                    width: 10,
                                   ),
-                                ),
-                                Expanded(child: Container()),
-                                Container(
-                                  margin: const EdgeInsets.symmetric(vertical: 10),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "Punch in",
-                                        style: TextStyle(
-                                          fontSize: size.width * 0.039,
-                                          color: ConstColor.blackText,
-                                          fontWeight: FontWeight.w700,
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    width: 70,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        color: ConstColor.primaryBackGround),
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          DateFormat('dd').format(date),
+                                          style: TextStyle(
+                                            fontSize: size.width * 0.045,
+                                            color: ConstColor.blackText,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        checkIn,
-                                        style: TextStyle(
-                                          fontSize: size.width * 0.037,
-                                          color: ConstColor.blackText.withOpacity(0.5),
+                                        Text(
+                                          DateFormat('EE').format(date),
+                                          style: TextStyle(
+                                            fontSize: size.width * 0.04,
+                                            color: ConstColor.blackText,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Expanded(child: Container()),
-                                Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "Punch out",
-                                        style: TextStyle(
-                                          fontSize: size.width * 0.037,
-                                          color: ConstColor.blackText,
-                                          fontWeight: FontWeight.w700,
+                                  Expanded(child: Container()),
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          "Punch in",
+                                          style: TextStyle(
+                                            fontSize: size.width * 0.039,
+                                            color: ConstColor.blackText,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        checkOut,
-                                        style: TextStyle(
-                                          fontSize: size.width * 0.038,
-                                          color: ConstColor.blackText
-                                              .withOpacity(0.5),
+                                        Text(
+                                          checkIn,
+                                          style: TextStyle(
+                                            fontSize: size.width * 0.037,
+                                            color: ConstColor.blackText
+                                                .withOpacity(0.5),
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Expanded(child: Container()),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: ConstColor.red,
-                              borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(11),
-                                bottomRight: Radius.circular(11),
+                                  Expanded(child: Container()),
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          "Punch out",
+                                          style: TextStyle(
+                                            fontSize: size.width * 0.037,
+                                            color: ConstColor.blackText,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Text(
+                                          checkOut,
+                                          style: TextStyle(
+                                            fontSize: size.width * 0.038,
+                                            color: ConstColor.blackText
+                                                .withOpacity(0.5),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(child: Container()),
+                                ],
                               ),
                             ),
-                            width: 70,
-                            height: 80,
-                            child: Text(
-                              (checkOut == "--/--") ? "A" : "B",
-                              style: TextStyle(
+                            Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: ConstColor.red,
+                                borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(11),
+                                  bottomRight: Radius.circular(11),
+                                ),
+                              ),
+                              width: 70,
+                              height: 80,
+                              child: Text(
+                                (checkOut == "--/--" || checkIn == "--/--")
+                                    ? ""
+                                    : (checkOut != "--/--" &&
+                                            checkIn != "--/--")
+                                        ? "P"
+                                        : "B",
+                                maxLines: 1,
+                                style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w700,
-                                  color: Colors.white),
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                }
+              }),
             ),
           ),
         ),

@@ -8,14 +8,14 @@ import 'const_image.dart';
 List bottomNavBarItems = [
   ConstImage.home,
   ConstImage.calendar2,
-  ConstImage.notification,
+  ConstImage.worksheet,
   ConstImage.menu,
 ];
 
 List trueBottomNavBarItems = [
   ConstImage.homeFill,
   ConstImage.calendar2Fill,
-  ConstImage.notificationFill,
+  ConstImage.worksheetFill,
   ConstImage.menuFill,
 ];
 

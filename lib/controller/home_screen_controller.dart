@@ -12,11 +12,15 @@ class HomeScreenController extends GetxController {
   RxInt earlyGoing = 0.obs;
   RxBool isLoading = false.obs;
   RxBool notificationVisible = false.obs;
-  RxList presentDays = [].obs;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-   fetchPresentDays(String userId, String month) {
-    _firestore.collection("Employee")
+  RxString status = "".obs;
+
+  RxList presentDays = [].obs;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  fetchPresentDays(String userId, String month) {
+    firestore
+        .collection("Employee")
         .doc(userId)
         .collection("Record")
         .orderBy('date', descending: true)
@@ -57,8 +61,10 @@ class HomeScreenController extends GetxController {
         String checkOutTime = doc['checkOut'];
 
         if (checkOutTime != "--/--") {
-          DateTime parsedCheckOutTime = DateFormat('hh:mm a').parse(checkOutTime);
-          TimeOfDay checkOutTimeOfDay = TimeOfDay.fromDateTime(parsedCheckOutTime);
+          DateTime parsedCheckOutTime =
+              DateFormat('hh:mm a').parse(checkOutTime);
+          TimeOfDay checkOutTimeOfDay =
+              TimeOfDay.fromDateTime(parsedCheckOutTime);
           TimeOfDay earlyGoingTime = TimeOfDay(hour: 19, minute: 30);
           DateTime checkOutDateTime = DateTime(
               DateTime.now().year,

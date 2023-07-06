@@ -25,14 +25,15 @@ class ConstImage {
   // nav
   static const String home = "assets/images/home.png";
   static const String calendar2 = "assets/images/calendar_2.png";
-  static const String notification = "assets/images/notification.png";
+  static const String worksheet = "assets/images/worksheet.png";
   static const String menu = "assets/images/menu.png";
 
   // nav_fill
   static const String homeFill = "assets/images/home_fill.png";
   static const String calendar2Fill = "assets/images/calendar_2_fill.png";
-  static const String notificationFill = "assets/images/notification_fill.png";
+  static const String worksheetFill = "assets/images/worksheet_fill.png";
   static const String menuFill = "assets/images/menu_fill.png";
+  static const String notificationFill = "assets/images/notification_fill.png";
 
   // notification
   static const String checkInNotification = "assets/images/checkin_notification.png";

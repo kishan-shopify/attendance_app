@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:attendance_app/modal/custom/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +9,7 @@ import '../../../controller/home_screen_controller.dart';
 import '../../../modal/const/const_color.dart';
 import '../../../modal/const/text_style.dart';
 import '../../../modal/custom/app_bar.dart';
+import '../../../modal/custom/custom_button.dart';
 
 class ApplyLeaveScreen extends StatefulWidget {
   const ApplyLeaveScreen({Key? key}) : super(key: key);
@@ -302,13 +302,11 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
         queryParameters: {
           'body':
               'From: $encodedStartDate\nTo: $encodedEndDate\nReason: $encodedReason'
-        }
+        });
 
-        );
-
-   try {
+    try {
       await launchUrl(email);
-    } catch(e) {
+    } catch (e) {
       log("Error");
     }
   }

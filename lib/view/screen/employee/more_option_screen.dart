@@ -303,7 +303,7 @@ class _MoreOptionScreenState extends State<MoreOptionScreen> {
           alignment: Alignment.topCenter,
           child: InkWell(
             onTap: () {
-
+              Navigator.push(context, MaterialPageRoute(builder: (_) => ProfilePage()));
             },
             child: Column(
               children: [

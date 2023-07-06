@@ -1,10 +1,13 @@
 // ignore_for_file: use_build_context_synchronously, prefer_typing_uninitialized_variables
 
 import 'dart:developer';
+import 'package:attendance_app/modal/custom/progress_indicator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../controller/camera_controller.dart';
 import '../../../controller/home_screen_controller.dart';
 import '../../../modal/const/const_color.dart';
 import '../../../modal/const/const_image.dart';
@@ -23,17 +26,59 @@ class EntryInOutScreen extends StatefulWidget {
 
 class _EntryInOutScreenState extends State<EntryInOutScreen> {
   final HomeScreenController homeController = Get.put(HomeScreenController());
+  final CameraScreenController cameraController =
+      Get.put(CameraScreenController());
   final String _month = DateFormat('MMMM').format(DateTime.now());
 
   @override
   void initState() {
-    homeController.fetchPresentDays(User.id, _month);
-    log("USER ===  ${User.name}");
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ProgressDialog().show(context);
+      homeController.fetchPresentDays(User.id, _month);
+      log("USER ===  ${User.name}");
+      _getRecord();
+      Future.delayed(Duration(seconds: 2), () {
+        ProgressDialog().hide(context);
+      });
+    });
+  }
+
+  void _getRecord() async {
+    try {
+      QuerySnapshot snap = await FirebaseFirestore.instance
+          .collection("Employee")
+          .where('id', isEqualTo: User.employeeId)
+          .get();
+
+      DocumentSnapshot snap2 = await FirebaseFirestore.instance
+          .collection("Employee")
+          .doc(snap.docs[0].id)
+          .collection("Record")
+          .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+          .get();
+
+      log("INPUT == $snap");
+      log("INPUT 2 == $snap2");
+
+      setState(() {
+        cameraController.checkIn = snap2['checkIn'];
+        cameraController.checkOut = snap2['checkOut'];
+        cameraController.checkInUrl = snap2['checkInImage'];
+        cameraController.checkOutUrl = snap2['checkOutImage'];
+      });
+    } catch (e) {
+      setState(() {
+        cameraController.checkIn = "--/--";
+        cameraController.checkOut = "--/--";
+        cameraController.checkInUrl = "";
+        cameraController.checkOutUrl = "";
+      });
+    }
   }
 
   @override
-    Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Column(
@@ -104,8 +149,25 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
             height: size.height * 0.04,
           ),
           CustomButton(
-            btnLabel: "Punch In",
+            btnLabel: (cameraController.checkIn != "--/--" &&
+                    cameraController.checkOut == "--/--")
+                ? "Punch Out"
+                : (cameraController.checkIn != "--/--" &&
+                        cameraController.checkOut != "--/--")
+                    ? "Done Today"
+                    : "Punch In",
             onTap: () {
+              (cameraController.checkIn != "--/--" && cameraController.checkOut != "--/--") ?
+              Get.snackbar("Oops", "You've done for today..!",
+                  colorText: ConstColor.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                  backgroundColor: ConstColor.red.withOpacity(0.8),
+                  icon: Icon(
+                    Icons.error_outline,
+                    color: ConstColor.white,
+                    size: 30,
+                  ))
+                  :
               Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const CameraScreen()));
             },
