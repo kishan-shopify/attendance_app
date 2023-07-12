@@ -1,6 +1,5 @@
 import '../modal_class/leave_class.dart';
 import '../modal_class/notification_class.dart';
-import '../modal_class/user.dart';
 import 'const_image.dart';
 
 List bottomNavBarItems = [
@@ -31,30 +30,6 @@ List moreOptionListTitle = [
   "Change Password",
   "Notification Settings",
   "Logout"
-];
-
-List profilePageList = [
-  "Employee ID :", //
-  "Email Id :",
-  "Mobile No :",
-  "Birth Date :", //
-  "Blood Group :",
-  "Aadhaar No :", //
-  "PAN No :", //
-  "Address :",
-  "Emergency No :" //
-];
-
-List profilePageListData = [
-  User.employeeId,
-  User.mail,
-  User.mobile,
-  User.birthdate,
-  User.bloodGroup,
-  User.aadhaarNo,
-  User.panNo,
-  User.address,
-  User.emergency,
 ];
 
 List dummyLeaveList = [

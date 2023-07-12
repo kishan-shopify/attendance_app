@@ -317,8 +317,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     if (checkIn == "--/--" || checkOut == "--/--") {
       return "";
     } else {
-      if (checkInDateTime.isAfter(lateComingDateTime) &&
-          checkOutDateTime.isBefore(earlyGoingDateTime)) {
+      if (checkInDateTime.isAfter(lateComingDateTime) && checkOutDateTime.isBefore(earlyGoingDateTime)) {
         return "L/E";
       } else if (checkInDateTime.isAfter(lateComingDateTime)) {
         return "L";
@@ -363,12 +362,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       return ConstColor.white;
     }
 
-    if (checkIn == "--/--" || checkOut == "--/--") {
+    if (checkIn == "--/--" && checkOut == "--/--") {
       return ConstColor.white;
     } else {
       if (checkInDateTime.isAfter(lateComingDateTime) &&
           checkOutDateTime.isBefore(earlyGoingDateTime)) {
         return ConstColor.primary;
+      } else if(checkIn != "--/--" && checkOut == "--/--"){
+        return ConstColor.red;
       } else if (checkInDateTime.isAfter(lateComingDateTime)) {
         return ConstColor.primary;
       } else if (checkOutDateTime.isBefore(earlyGoingDateTime)) {
@@ -441,7 +442,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     SizedBox(
                       width: 10,
                     ),
-                      GestureDetector(
+                    GestureDetector(
                         onTap: (){
                           setState(() {
                             punchInEdit = false;
@@ -498,7 +499,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     SizedBox(
                       width: 10,
                     ),
-                      GestureDetector(
+                    GestureDetector(
                         onTap: (){
                           setState(() {
                             punchOutEdit = false;
@@ -549,4 +550,5 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     // Close the keyboard
     focusNode.unfocus();
   }
+
 }

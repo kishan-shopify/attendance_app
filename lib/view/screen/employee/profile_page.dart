@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:attendance_app/modal/const/text_style.dart';
-import 'package:attendance_app/modal/custom/profile_screen_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +9,9 @@ import 'package:image_picker/image_picker.dart';
 import '../../../controller/home_screen_controller.dart';
 import '../../../modal/const/const_color.dart';
 import '../../../modal/const/const_image.dart';
+import '../../../modal/const/text_style.dart';
 import '../../../modal/custom/app_bar.dart';
+import '../../../modal/custom/profile_screen_field.dart';
 import '../../../modal/modal_class/user.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -171,38 +171,45 @@ class _ProfilePageState extends State<ProfilePage> {
                         controller: mobileNo,
                         isEditIcon: true,
                         pencilOnTap: () {},
+
                       ),
                       ProfileScreenField(
                         label: 'Birth Date:',
                         controller: birthDate,
                         isEditIcon: false,
+
                       ),
                       ProfileScreenField(
                         label: 'Blood Group:',
                         controller: bloodGroup,
                         isEditIcon: true,
                         pencilOnTap: () {},
+
                       ),
                       ProfileScreenField(
                         label: 'Aadhaar No:',
                         controller: aadhaarNo,
                         isEditIcon: false,
+
                       ),
                       ProfileScreenField(
                         label: 'PAN No:',
                         controller: panNo,
                         isEditIcon: false,
+
                       ),
                       ProfileScreenField(
                         label: 'Address:',
                         controller: address,
                         isEditIcon: true,
                         pencilOnTap: () {},
+
                       ),
                       ProfileScreenField(
                         label: 'Emergency No:',
                         controller: emergencyNo,
                         isEditIcon: false,
+
                       ),
                     ],
                   ),

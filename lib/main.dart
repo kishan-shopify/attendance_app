@@ -1,9 +1,7 @@
-import 'dart:developer';
-
-import 'package:attendance_app/modal/firebase_api.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'modal/firebase_api.dart';
 import 'view/screen/splash_screen.dart';
 
 
