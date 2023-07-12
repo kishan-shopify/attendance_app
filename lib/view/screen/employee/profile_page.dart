@@ -51,199 +51,169 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
-            height: double.infinity,
-            width: double.infinity,
-            color: ConstColor.primaryBackGround,
-            child: Column(
+      body: Container(
+        padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
+        height: double.infinity,
+        width: double.infinity,
+        color: ConstColor.primaryBackGround,
+        child: Column(
+          children: [
+            SizedBox(
+              height:
+                  MediaQuery.of(context).padding.top + size.height * 0.02,
+            ),
+            CustomAppBar(
+              onTap: () {
+                homeController.notificationVisible.value =
+                    !homeController.notificationVisible.value;
+              },
+            ),
+            SizedBox(
+              height: size.height * 0.04,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  height:
-                      MediaQuery.of(context).padding.top + size.height * 0.02,
-                ),
-                CustomAppBar(
-                  onTap: () {
-                    homeController.notificationVisible.value =
-                        !homeController.notificationVisible.value;
-                  },
-                ),
-                SizedBox(
-                  height: size.height * 0.04,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "My Profile",
-                      style: textStyleW700(
-                        size.width * 0.07,
-                        ConstColor.blackText,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: size.height * 0.1,
-                ),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 25),
-                    width: size.width,
-                    height: size.height * 0.2,
-                    decoration: BoxDecoration(
-                      color: ConstColor.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: size.height * 0.09,
-                        ),
-                        Text(
-                          User.name,
-                          style: TextStyle(
-                              fontSize: size.width * 0.055,
-                              color: ConstColor.blackText,
-                              fontWeight: FontWeight.w900),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          User.designation,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              // size.width * 0.042,
-                              fontWeight: FontWeight.w600,
-                              color: ConstColor.blackText.withOpacity(0.6)),
-                        ),
-                        Text(
-                          "Joined from ${User.joiningDate}",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              // size.width * 0.042,
-                              fontWeight: FontWeight.w600,
-                              color: ConstColor.blackText.withOpacity(0.6)),
-                        ),
-                        SizedBox(
-                          height: size.height * 0.05,
-                        ),
-                        ProfileScreenField(
-                          label: 'Employee ID:',
-                          controller: employeeID,
-                          isEditIcon: true,
-                          pencilOnTap: (){
-
-                          },
-                        ),
-                        ProfileScreenField(
-                          label: 'Employee ID:',
-                          controller: employeeID,
-                          isEditIcon: true,
-                          pencilOnTap: (){
-
-                          },
-                        ),ProfileScreenField(
-                          label: 'Employee ID:',
-                          controller: employeeID,
-                          isEditIcon: true,
-                          pencilOnTap: (){
-
-                          },
-                        ),ProfileScreenField(
-                          label: 'Employee ID:',
-                          controller: employeeID,
-                          isEditIcon: true,
-                          pencilOnTap: (){
-
-                          },
-                        ),ProfileScreenField(
-                          label: 'Employee ID:',
-                          controller: employeeID,
-                          isEditIcon: true,
-                          pencilOnTap: (){
-
-                          },
-                        ),ProfileScreenField(
-                          label: 'Employee ID:',
-                          controller: employeeID,
-                          isEditIcon: true,
-                          pencilOnTap: (){
-
-                          },
-                        ),ProfileScreenField(
-                          label: 'Employee ID:',
-                          controller: employeeID,
-                          isEditIcon: true,
-                          pencilOnTap: (){
-
-                          },
-                        ),ProfileScreenField(
-                          label: 'Employee ID:',
-                          controller: employeeID,
-                          isEditIcon: true,
-                          pencilOnTap: (){
-
-                          },
-                        ), ProfileScreenField(
-                          label: 'Employee ID:',
-                          controller: employeeID,
-                          isEditIcon: true,
-                          pencilOnTap: () {},
-                        ),
-                      ],
-                    ),
+                Text(
+                  "My Profile",
+                  style: textStyleW700(
+                    size.width * 0.07,
+                    ConstColor.blackText,
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                )
               ],
             ),
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: InkWell(
-              onTap: () {},
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).padding.top +
-                        size.height * 0.175,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      pickUploadProfilePic();
-                    },
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      // backgroundColor: Colors.transparent,
-                      radius: size.width * 0.18,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ClipOval(
-                          child: (User.profile == " ")
-                              ? Image.asset(
-                                  ConstImage.rutvik,
-                                )
-                              : Image.network(
-                                  User.profile,
-                                ),
+            SizedBox(
+              height: size.height * 0.04,
+            ),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 25),
+                width: size.width,
+                height: size.height,
+                decoration: BoxDecoration(
+                  color: ConstColor.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(height: size.height * 0.02,),
+                      GestureDetector(
+                        onTap: () {
+                          pickUploadProfilePic();
+                        },
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          // backgroundColor: Colors.transparent,
+                          radius: size.width * 0.18,
+                          child: Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(4.0),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: ConstColor.primary,width: 1.5)),
+                            child: ClipOval(
+                              child: (User.profile == " ")
+                                  ? Image.asset(
+                                ConstImage.rutvik,
+                              )
+                                  : Image.network(User.profile),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      SizedBox(height: size.height * 0.02,),
+                      Text(
+                        User.name,
+                        style: TextStyle(
+                            fontSize: size.width * 0.055,
+                            color: ConstColor.blackText,
+                            fontWeight: FontWeight.w900),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        User.designation,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          // size.width * 0.042,
+                            fontWeight: FontWeight.w600,
+                            color: ConstColor.blackText.withOpacity(0.6)),
+                      ),
+                      Text(
+                        "Joined from ${User.joiningDate}",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          // size.width * 0.042,
+                            fontWeight: FontWeight.w600,
+                            color: ConstColor.blackText.withOpacity(0.6)),
+                      ),
+                      SizedBox(
+                        height: size.height * 0.05,
+                      ),
+                      ProfileScreenField(
+                        label: 'Employee ID:',
+                        controller: employeeID,
+                        isEditIcon: false,
+                      ),
+                      ProfileScreenField(
+                        label: 'Email ID:',
+                        controller: emailID,
+                        isEditIcon: true,
+                        pencilOnTap: () {},
+                      ),
+                      ProfileScreenField(
+                        label: 'Mobile No:',
+                        controller: mobileNo,
+                        isEditIcon: true,
+                        pencilOnTap: () {},
+                      ),
+                      ProfileScreenField(
+                        label: 'Birth Date:',
+                        controller: birthDate,
+                        isEditIcon: false,
+                      ),
+                      ProfileScreenField(
+                        label: 'Blood Group:',
+                        controller: bloodGroup,
+                        isEditIcon: true,
+                        pencilOnTap: () {},
+                      ),
+                      ProfileScreenField(
+                        label: 'Aadhaar No:',
+                        controller: aadhaarNo,
+                        isEditIcon: false,
+                      ),
+                      ProfileScreenField(
+                        label: 'PAN No:',
+                        controller: panNo,
+                        isEditIcon: false,
+                      ),
+                      ProfileScreenField(
+                        label: 'Address:',
+                        controller: address,
+                        isEditIcon: true,
+                        pencilOnTap: () {},
+                      ),
+                      ProfileScreenField(
+                        label: 'Emergency No:',
+                        controller: emergencyNo,
+                        isEditIcon: false,
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ],
+            SizedBox(
+              height: 20,
+            )
+          ],
+        ),
       ),
     );
   }
@@ -268,10 +238,7 @@ class _ProfilePageState extends State<ProfilePage> {
         User.profile = value;
       });
 
-      await FirebaseFirestore.instance
-          .collection("Employee")
-          .doc(User.id)
-          .update({'profile': value});
+      await FirebaseFirestore.instance.collection("Employee").doc(User.id).update({'profile': value});
     });
   }
 }

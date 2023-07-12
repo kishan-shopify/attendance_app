@@ -57,7 +57,7 @@ class _CameraScreen extends State<CameraScreen> {
     setState(() {});
   }
 
-  void _toggleCamera() {
+  void toggleCamera() {
     if (mounted) {
       int newCameraIndex = (_selectedCameraIndex + 1) % cameras.length;
       _selectedCameraIndex = newCameraIndex;
@@ -124,10 +124,6 @@ class _CameraScreen extends State<CameraScreen> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
-    // final deviceRatio = size.width / size.height;
-    // final previewRatio = widget.controller.value.previewSize?.aspectRatio;
-    // final scale = deviceRatio / previewRatio!;
-
     return Scaffold(
       backgroundColor: ConstColor.primaryBackGround,
       appBar: AppBar(
@@ -138,7 +134,7 @@ class _CameraScreen extends State<CameraScreen> {
           color: ConstColor.blackText.withOpacity(0.7),
         ),
         title: Text(
-          "Punch In",
+          (controller.checkIn == "--/--") ? "Punch In" : "Punch Out",
           style: textStyleW600(size.width * 0.053, ConstColor.blackText),
         ),
       ),
@@ -197,7 +193,9 @@ class _CameraScreen extends State<CameraScreen> {
             height: size.height * 0.05,
           ),
           Text(
-            "Verify to Punch In",
+            (controller.checkIn == "--/--") ?
+
+            "Verify to Punch In" : "Verify to Punch Out",
             style: textStyleW600(size.width * 0.058, ConstColor.blackText),
           ),
           SizedBox(
@@ -262,8 +260,7 @@ class _CameraScreen extends State<CameraScreen> {
           }
         } catch (e) {
           Get.snackbar(
-            "Error",
-            "$e",
+            "Error", "$e",
             colorText: ConstColor.white,
             dismissDirection: DismissDirection.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
@@ -283,7 +280,7 @@ class _CameraScreen extends State<CameraScreen> {
 
   Widget _buildCameraToggleButton() {
     return GestureDetector(
-      onTap: _toggleCamera,
+      onTap: toggleCamera,
       child: SizedBox(
         height: 32,
         width: 35,
@@ -376,12 +373,8 @@ class _CameraScreen extends State<CameraScreen> {
 
       String checkIn = snap2['checkIn'];
 
-      await FirebaseFirestore.instance
-          .collection("Employee")
-          .doc(snap.docs[0].id)
-          .collection("Record")
-          .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
-          .update({
+      await FirebaseFirestore.instance.collection("Employee").doc(snap.docs[0].id).collection("Record")
+          .doc(DateFormat('dd MMMM yyyy').format(DateTime.now())).update({
         'date': Timestamp.now(),
         'checkIn': checkIn,
         'checkInImage': controller.checkInUrl,

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:attendance_app/modal/custom/progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -29,6 +30,8 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
   final CameraScreenController cameraController =
       Get.put(CameraScreenController());
   final String _month = DateFormat('MMMM').format(DateTime.now());
+  static const double officeLatitude = 23.027021;
+  static const double officeLongitude = 72.5063857;
 
   @override
   void initState() {
@@ -157,19 +160,19 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
                     ? "Done Today"
                     : "Punch In",
             onTap: () {
-              (cameraController.checkIn != "--/--" && cameraController.checkOut != "--/--") ?
-              Get.snackbar("Oops", "You've done for today..!",
-                  colorText: ConstColor.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-                  backgroundColor: ConstColor.red.withOpacity(0.8),
-                  icon: Icon(
-                    Icons.error_outline,
-                    color: ConstColor.white,
-                    size: 30,
-                  ))
-                  :
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const CameraScreen()));
+              (cameraController.checkIn != "--/--" &&
+                      cameraController.checkOut != "--/--")
+                  ? Get.snackbar("Oops", "You've done for today..!",
+                      colorText: ConstColor.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 25, vertical: 15),
+                      backgroundColor: ConstColor.red.withOpacity(0.8),
+                      icon: Icon(
+                        Icons.error_outline,
+                        color: ConstColor.white,
+                        size: 30,
+                      ))
+                  : checkDistanceFromOffice();
             },
             btnColor: ConstColor.primary,
             labelColor: ConstColor.blackText,
@@ -238,5 +241,50 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
     } else {
       return "Good evening ${User.name}";
     }
+  }
+
+  checkDistanceFromOffice() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+
+    if (permission == LocationPermission.denied) {
+      Get.snackbar("Error", "Please enabled location..!",
+          colorText: ConstColor.white,
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+          backgroundColor: ConstColor.red.withOpacity(0.8),
+          icon: Icon(
+            Icons.error_outline,
+            color: ConstColor.white,
+            size: 30,
+          ));
+    }
+      // Get the current position of the device
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.best);
+
+      // Calculate the distance between the user's location and the office location
+      double distanceInMeters = Geolocator.distanceBetween(
+        position.latitude,
+        position.longitude,
+        officeLatitude,
+        officeLongitude,
+      );
+
+      // Define the threshold distance (e.g., 200 meters)
+      double thresholdDistance = 15;
+
+      if (distanceInMeters <= thresholdDistance) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => const CameraScreen()));
+      } else {
+        Get.snackbar("Error", "You're away from office..!",
+            colorText: ConstColor.white,
+            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+            backgroundColor: ConstColor.red.withOpacity(0.8),
+            icon: Icon(
+              Icons.error_outline,
+              color: ConstColor.white,
+              size: 30,
+            ));
+      }
   }
 }

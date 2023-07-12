@@ -19,13 +19,7 @@ class HomeScreenController extends GetxController {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   fetchPresentDays(String userId, String month) {
-    firestore
-        .collection("Employee")
-        .doc(userId)
-        .collection("Record")
-        .orderBy('date', descending: true)
-        .snapshots()
-        .listen((QuerySnapshot snapshot) {
+    firestore.collection("Employee").doc(userId).collection("Record").orderBy('date', descending: true).snapshots().listen((QuerySnapshot snapshot) {
       final snap = snapshot.docs.toList();
 
       final presentDaysList = snap.where((doc) {
@@ -61,10 +55,8 @@ class HomeScreenController extends GetxController {
         String checkOutTime = doc['checkOut'];
 
         if (checkOutTime != "--/--") {
-          DateTime parsedCheckOutTime =
-              DateFormat('hh:mm a').parse(checkOutTime);
-          TimeOfDay checkOutTimeOfDay =
-              TimeOfDay.fromDateTime(parsedCheckOutTime);
+          DateTime parsedCheckOutTime = DateFormat('hh:mm a').parse(checkOutTime);
+          TimeOfDay checkOutTimeOfDay = TimeOfDay.fromDateTime(parsedCheckOutTime);
           TimeOfDay earlyGoingTime = TimeOfDay(hour: 19, minute: 30);
           DateTime checkOutDateTime = DateTime(
               DateTime.now().year,

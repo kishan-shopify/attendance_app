@@ -1,9 +1,15 @@
+import 'dart:developer';
+
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../controller/home_screen_controller.dart';
+import '../../../modal/const/const_image.dart';
+import '../../../modal/const/text_style.dart';
+import '../../../modal/custom/custom_button.dart';
 import '../../../modal/modal_class/user.dart';
 import '../../../modal/const/const_color.dart';
 
@@ -15,7 +21,11 @@ class AttendanceScreen extends StatefulWidget {
 }
 
 class _AttendanceScreenState extends State<AttendanceScreen> {
-  final HomeScreenController homeController = Get.put(HomeScreenController());      
+  final HomeScreenController homeController = Get.put(HomeScreenController());
+  final TextEditingController punchIn = TextEditingController();
+  final TextEditingController punchOut = TextEditingController();
+  final FocusNode focusNode = FocusNode();
+
   var month;
   DateTime currentDate = DateTime.now();
 
@@ -29,7 +39,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
   void initState() {
     updateMonth(0);
+    focusNode.addListener(onFocusChange);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    focusNode.removeListener(onFocusChange);
+    focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -116,6 +134,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       final date = doc['date'].toDate();
                       final checkIn = doc['checkIn'];
                       final checkOut = doc['checkOut'];
+
                       return Container(
                         width: size.width,
                         margin: const EdgeInsets.only(bottom: 10),
@@ -217,29 +236,34 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                 ],
                               ),
                             ),
-                            Container(
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: ConstColor.red,
-                                borderRadius: const BorderRadius.only(
-                                  topRight: Radius.circular(11),
-                                  bottomRight: Radius.circular(11),
+                            GestureDetector(
+                              onTap: () {
+                                if(index != 0 ){
+                                  log("INDEX  ===  $index");
+                                  punchIn.text = checkIn;
+                                  punchOut.text = checkOut;
+                                  editDialogBox(size, date);
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: dayStatusColor(checkIn, checkOut),
+                                  borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(11),
+                                    bottomRight: Radius.circular(11),
+                                  ),
                                 ),
-                              ),
-                              width: 70,
-                              height: 80,
-                              child: Text(
-                                (checkOut == "--/--" || checkIn == "--/--")
-                                    ? ""
-                                    : (checkOut != "--/--" &&
-                                            checkIn != "--/--")
-                                        ? "P"
-                                        : "B",
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
+                                width: 70,
+                                height: 80,
+                                child: Text(
+                                  dayStatus(checkIn, checkOut),
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
@@ -255,5 +279,274 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         ),
       ],
     );
+  }
+
+  String dayStatus(checkIn, checkOut) {
+    // CHECK IN
+    DateTime parsedCheckInTime = DateFormat('hh:mm a').parse(checkIn);
+    TimeOfDay checkInTimeOfDay = TimeOfDay.fromDateTime(parsedCheckInTime);
+    TimeOfDay lateComingTime = TimeOfDay(hour: 9, minute: 30);
+    DateTime checkInDateTime = DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+        checkInTimeOfDay.hour,
+        checkInTimeOfDay.minute);
+    DateTime lateComingDateTime = DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+        lateComingTime.hour,
+        lateComingTime.minute);
+
+    // CHECK OUT
+    DateTime checkOutDateTime;
+    DateTime earlyGoingDateTime;
+    if (checkOut != "--/--") {
+      DateTime parsedCheckOutTime = DateFormat('hh:mm a').parse(checkOut);
+      TimeOfDay checkOutTimeOfDay = TimeOfDay.fromDateTime(parsedCheckOutTime);
+      TimeOfDay earlyGoingTime = TimeOfDay(hour: 19, minute: 30);
+      checkOutDateTime = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, checkOutTimeOfDay.hour, checkOutTimeOfDay.minute);
+      earlyGoingDateTime = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, earlyGoingTime.hour, earlyGoingTime.minute);
+    } else {
+      return "";
+    }
+
+    if (checkIn == "--/--" || checkOut == "--/--") {
+      return "";
+    } else {
+      if (checkInDateTime.isAfter(lateComingDateTime) &&
+          checkOutDateTime.isBefore(earlyGoingDateTime)) {
+        return "L/E";
+      } else if (checkInDateTime.isAfter(lateComingDateTime)) {
+        return "L";
+      } else if (checkOutDateTime.isBefore(earlyGoingDateTime)) {
+        return "E";
+      } else {
+        return "P";
+      }
+    }
+  }
+
+  Color dayStatusColor(checkIn, checkOut) {
+    // CHECK IN
+    DateTime parsedCheckInTime = DateFormat('hh:mm a').parse(checkIn);
+    TimeOfDay checkInTimeOfDay = TimeOfDay.fromDateTime(parsedCheckInTime);
+    TimeOfDay lateComingTime = TimeOfDay(hour: 9, minute: 30);
+    DateTime checkInDateTime = DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+        checkInTimeOfDay.hour,
+        checkInTimeOfDay.minute);
+    DateTime lateComingDateTime = DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+        lateComingTime.hour,
+        lateComingTime.minute);
+
+    // CHECK OUT
+    DateTime checkOutDateTime;
+    DateTime earlyGoingDateTime;
+    if (checkOut != "--/--") {
+      DateTime parsedCheckOutTime = DateFormat('hh:mm a').parse(checkOut);
+      TimeOfDay checkOutTimeOfDay = TimeOfDay.fromDateTime(parsedCheckOutTime);
+      TimeOfDay earlyGoingTime = TimeOfDay(hour: 19, minute: 30);
+      checkOutDateTime = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, checkOutTimeOfDay.hour, checkOutTimeOfDay.minute);
+      earlyGoingDateTime = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, earlyGoingTime.hour, earlyGoingTime.minute);
+    } else {
+      return ConstColor.white;
+    }
+
+    if (checkIn == "--/--" || checkOut == "--/--") {
+      return ConstColor.white;
+    } else {
+      if (checkInDateTime.isAfter(lateComingDateTime) &&
+          checkOutDateTime.isBefore(earlyGoingDateTime)) {
+        return ConstColor.primary;
+      } else if (checkInDateTime.isAfter(lateComingDateTime)) {
+        return ConstColor.primary;
+      } else if (checkOutDateTime.isBefore(earlyGoingDateTime)) {
+        return ConstColor.primary;
+      } else {
+        return ConstColor.lightGreen;
+      }
+    }
+  }
+
+  editDialogBox(size, date) {
+    var punchInEdit = true;
+    var punchOutEdit = true;
+    return showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        contentPadding: EdgeInsets.symmetric(horizontal: 25),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              DateFormat('dd MMMM yyyy').format(date),
+              style: textStyleW600(
+                size.width * 0.04,
+                ConstColor.blackText,
+              ),
+            ),
+          ],
+        ),
+        content: Container(
+          height: size.height / 5,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 25,
+              ),
+              Text(
+                "Punch In :",
+                style: TextStyle(
+                  fontSize: size.width * 0.041,
+                  color: ConstColor.blackText.withOpacity(0.9),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                  bottom: BorderSide(color: ConstColor.blackText),
+                )),
+                height: 25,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        cursorColor: ConstColor.blackText,
+                        controller: punchIn,
+                        focusNode: focusNode,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                        ),
+                        readOnly: punchInEdit,
+                        onEditingComplete: closeKeyboard,
+                        style: TextStyle(
+                          fontSize: size.width * 0.04,
+                          fontWeight: FontWeight.w600,
+                          color: ConstColor.blackText.withOpacity(0.6),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                      GestureDetector(
+                        onTap: (){
+                          setState(() {
+                            punchInEdit = false;
+                          });
+                          if (!punchInEdit) {
+                            // widget.pencilOnTap?.call();
+                            // Request focus on the text field
+                            focusNode.requestFocus();
+                          }
+                        },
+                        child: Image.asset(
+                          ConstImage.edit,
+                          height: 20,
+                          width: 20,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Text(
+                "Punch Out :",
+                style: TextStyle(
+                  fontSize: size.width * 0.041,
+                  color: ConstColor.blackText.withOpacity(0.9),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                  bottom: BorderSide(color: ConstColor.blackText),
+                )),
+                height: 25,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        cursorColor: ConstColor.blackText,
+                        controller: punchOut,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                        ),
+                        readOnly: punchOutEdit,
+                        onEditingComplete: closeKeyboard,
+                        style: TextStyle(
+                          fontSize: size.width * 0.04,
+                          fontWeight: FontWeight.w600,
+                          color: ConstColor.blackText.withOpacity(0.6),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                      GestureDetector(
+                        onTap: (){
+                          setState(() {
+                            punchOutEdit = false;
+                          });
+                        },
+                        child: Image.asset(
+                          ConstImage.edit,
+                          height: 20,
+                          width: 20,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          CustomButton(
+              btnLabel: "Submit Request",
+              onTap: () {
+                Navigator.pop(context);
+                Fluttertoast.showToast(
+                    msg: "Request send successfully...!", //message to show toast
+                    toastLength: Toast.LENGTH_LONG, //duration for message to show
+                    gravity: ToastGravity.CENTER, //where you want to show, top, bottom
+                    timeInSecForIosWeb: 1, //for iOS only
+                    //backgroundColor: Colors.red, //background Color for message
+                    textColor: ConstColor.blackText, //message text color
+                    fontSize: 16.0 //message font size
+                );
+              },
+              btnColor: ConstColor.primary,
+              labelColor: ConstColor.white),
+        ],
+      ),
+    );
+  }
+
+  void onFocusChange() {
+    if (focusNode.hasFocus) {
+      // Open the keyboard
+      FocusScope.of(context).requestFocus(focusNode);
+    }
+  }
+
+  void  closeKeyboard() {
+    // Close the keyboard
+    focusNode.unfocus();
   }
 }

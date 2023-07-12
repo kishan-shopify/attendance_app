@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -49,26 +48,22 @@ class LoginController extends GetxController {
 
         try {
           if (ePassword == snapshot.docs[0]["password"]) {
-
-            sharedPreferences =
-            await SharedPreferences.getInstance();
+            sharedPreferences = await SharedPreferences.getInstance();
 
             sharedPreferences.setString('employeeId', eID).then((_) {
-              User.employeeId =
-              sharedPreferences.getString('employeeId')!;
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (_) => const EmployeeHomeScreen()));
+              User.employeeId = sharedPreferences.getString('employeeId')!;
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const EmployeeHomeScreen()));
             });
-
-
-
-
             employeeID.value.clear();
             employeePassword.value.clear();
           } else {
             Get.snackbar("Error", "Wrong Password..!",
                 colorText: ConstColor.white,
-                padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
                 backgroundColor: ConstColor.red.withOpacity(0.8),
                 icon: Icon(
                   Icons.error_outline,

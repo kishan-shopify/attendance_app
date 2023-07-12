@@ -1,7 +1,5 @@
-
 import '../modal_class/leave_class.dart';
 import '../modal_class/notification_class.dart';
-
 import '../modal_class/user.dart';
 import 'const_image.dart';
 
@@ -18,7 +16,6 @@ List trueBottomNavBarItems = [
   ConstImage.worksheetFill,
   ConstImage.menuFill,
 ];
-
 
 List moreOptionList = [
   ConstImage.profile,
@@ -37,15 +34,15 @@ List moreOptionListTitle = [
 ];
 
 List profilePageList = [
-  "Employee ID :",
+  "Employee ID :", //
   "Email Id :",
   "Mobile No :",
-  "Birth Date :",
+  "Birth Date :", //
   "Blood Group :",
-  "Aadhaar No :",
-  "PAN No :",
+  "Aadhaar No :", //
+  "PAN No :", //
   "Address :",
-  "Emergency No :"
+  "Emergency No :" //
 ];
 
 List profilePageListData = [
