@@ -1,5 +1,3 @@
-
-import 'package:attendance_app/view/screen/employee/leave_section.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,6 +5,7 @@ import '../../../controller/home_screen_controller.dart';
 import '../../../modal/const/const_color.dart';
 import '../../../modal/const/const_image.dart';
 import '../../../modal/modal_class/user.dart';
+import 'leave_section.dart';
 import 'profile_page.dart';
 
 class MoreOptionScreen extends StatefulWidget {
@@ -218,42 +217,6 @@ class _MoreOptionScreenState extends State<MoreOptionScreen> {
                 ],
               ),
             ),
-            // SizedBox(
-            //   height: size.height * 0.015,
-            // ),
-            // Container(
-            //   padding: const EdgeInsets.symmetric(vertical: 7,horizontal: 10),
-            //   width: size.width,
-            //   height: size.height * 0.06,
-            //   decoration: BoxDecoration(
-            //     color: ConstColor.white,
-            //     borderRadius: BorderRadius.circular(10),
-            //   ),
-            //   child: Row(
-            //     children: [
-            //       Padding(
-            //         padding: const EdgeInsets.symmetric(vertical: 2),
-            //         child: Image.asset(ConstImage.calendar),
-            //       ),
-            //       const SizedBox(width: 15,),
-            //       Text(
-            //         "My Attendance",
-            //         maxLines: 1,
-            //         overflow: TextOverflow.ellipsis,
-            //         style: TextStyle(
-            //             fontSize: size.width * 0.042,
-            //             // size.width * 0.042,
-            //             fontWeight: FontWeight.w600,
-            //             color: ConstColor.blackText.withOpacity(0.7)),
-            //       ),
-            //       Expanded(child: Container()),
-            //       Padding(
-            //         padding: const EdgeInsets.symmetric(vertical: 10.0),
-            //         child: Image.asset(ConstImage.forward),
-            //       ),
-            //     ],
-            //   ),
-            // ),
             SizedBox(
               height: size.height * 0.015,
             ),
@@ -273,7 +236,7 @@ class _MoreOptionScreenState extends State<MoreOptionScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: Image.asset(ConstImage.leave),
+                      child: Image.asset(ConstImage.leaveFill),
                     ),
                     const SizedBox(
                       width: 15,

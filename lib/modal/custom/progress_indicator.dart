@@ -16,6 +16,7 @@ class ProgressDialog {
       ConstColor.primaryBackGround,
     ];
     return showDialog(
+      barrierDismissible: false,
       context: context,
       // barrierDismissible: false,
       builder: (BuildContext context) {
@@ -23,7 +24,7 @@ class ProgressDialog {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
+            children: [
               Padding(
                 padding:
                 EdgeInsets.all(MediaQuery.of(context).size.height * 0.18),

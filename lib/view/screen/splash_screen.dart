@@ -1,12 +1,10 @@
 import 'dart:async';
-
 import '../../modal/const/const_color.dart';
 import '../../modal/const/const_image.dart';
 import '../../modal/const/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../main.dart';
 import '../../modal/modal_class/user.dart';
 import 'employee/home_screen.dart';
 import 'login_screen.dart';
@@ -73,15 +71,6 @@ class _SplashScreenState extends State<SplashScreen> {
               maxLines: 1,
               style: textStyleW600(size.width * 0.068, ConstColor.blackText),
             ),
-            // AnimatedTextKit(
-            //   animatedTexts: [
-            //     ScaleAnimatedText('Welcome to'),
-            //     ScaleAnimatedText('Janovis Infotech'),
-            //   ],
-            //   onTap: () {
-            //     print("Tap Event");
-            //   },
-            // ),
           ],
         ),
       ),
@@ -93,14 +82,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
     try {
       if (sharedPreferences.getString('employeeId') != null) {
-        setState(() {
-          User.employeeId = sharedPreferences.getString('employeeId')!;
-          userAvailable = true;
-        });
+        User.employeeId = sharedPreferences.getString('employeeId')!;
+        userAvailable = true;
       }
-
-
-    } catch (e) {
+    }
+    catch (e) {
       setState(() {
         userAvailable = false;
       });

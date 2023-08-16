@@ -32,22 +32,6 @@ List moreOptionListTitle = [
   "Logout"
 ];
 
-List dummyLeaveList = [
-  LeaveClass(leaveType: "CL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
-  LeaveClass(leaveType: "FL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
-  LeaveClass(leaveType: "SL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
-  LeaveClass(leaveType: "OTH", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
-  LeaveClass(leaveType: "OTH", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
-  LeaveClass(leaveType: "CL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
-  LeaveClass(leaveType: "CL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
-  LeaveClass(leaveType: "SL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
-  LeaveClass(leaveType: "SL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
-  LeaveClass(leaveType: "CL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
-  LeaveClass(leaveType: "FL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
-  LeaveClass(leaveType: "CL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
-  LeaveClass(leaveType: "FL", fromDate: "18 July 2023", toDate: "20 July 2023", reason: ""),
-];
-
 List dummyNotificationList = [
   NotificationClass(icon: ConstImage.checkInNotification, title: "Hey, You're getting late, Please hurry up and check in", time: ""),
   NotificationClass(icon: ConstImage.checkOutNotification, title: "Hey, It's time to checkout", time: ""),

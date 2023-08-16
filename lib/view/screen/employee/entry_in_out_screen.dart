@@ -1,7 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, prefer_typing_uninitialized_variables
-
 import 'dart:developer';
-import 'package:attendance_app/modal/custom/progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -15,6 +12,7 @@ import '../../../modal/const/const_image.dart';
 import '../../../modal/const/text_style.dart';
 import '../../../modal/custom/custom_button.dart';
 import '../../../modal/custom/label_container.dart';
+import '../../../modal/custom/progress_indicator.dart';
 import '../../../modal/modal_class/user.dart';
 import '../../../view/screen/employee/camera_screen.dart';
 
@@ -27,8 +25,7 @@ class EntryInOutScreen extends StatefulWidget {
 
 class _EntryInOutScreenState extends State<EntryInOutScreen> {
   final HomeScreenController homeController = Get.put(HomeScreenController());
-  final CameraScreenController cameraController =
-      Get.put(CameraScreenController());
+  final CameraScreenController cameraController = Get.put(CameraScreenController());
   final String _month = DateFormat('MMMM').format(DateTime.now());
   static const double officeLatitude = 23.027021;
   static const double officeLongitude = 72.5063857;
@@ -36,18 +33,16 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       ProgressDialog().show(context);
-      homeController.fetchPresentDays(User.id, _month);
-      log("USER ===  ${User.name}");
-      _getRecord();
-      Future.delayed(Duration(seconds: 2), () {
-        ProgressDialog().hide(context);
-      });
+      await homeController.fetchPresentDays(User.id, _month);
+      await getRecord();
+      ProgressDialog().hide(context);
     });
   }
 
-  void _getRecord() async {
+
+  Future<void> getRecord() async {
     try {
       QuerySnapshot snap = await FirebaseFirestore.instance
           .collection("Employee")
@@ -65,17 +60,17 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
       log("INPUT 2 == $snap2");
 
       setState(() {
-        cameraController.checkIn = snap2['checkIn'];
-        cameraController.checkOut = snap2['checkOut'];
-        cameraController.checkInUrl = snap2['checkInImage'];
-        cameraController.checkOutUrl = snap2['checkOutImage'];
+        cameraController.checkIn.value = snap2['checkIn'];
+        cameraController.checkOut.value = snap2['checkOut'];
+        cameraController.checkInUrl.value = snap2['checkInImage'];
+        cameraController.checkOutUrl.value = snap2['checkOutImage'];
       });
     } catch (e) {
       setState(() {
-        cameraController.checkIn = "--/--";
-        cameraController.checkOut = "--/--";
-        cameraController.checkInUrl = "";
-        cameraController.checkOutUrl = "";
+        cameraController.checkIn.value = "--/--";
+        cameraController.checkOut.value = "--/--";
+        cameraController.checkInUrl.value = "";
+        cameraController.checkOutUrl.value = "";
       });
     }
   }
@@ -152,26 +147,26 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
             height: size.height * 0.04,
           ),
           CustomButton(
-            btnLabel: (cameraController.checkIn != "--/--" &&
-                    cameraController.checkOut == "--/--")
+            btnLabel: (cameraController.checkIn.value != "--/--" &&
+                cameraController.checkOut.value == "--/--")
                 ? "Punch Out"
-                : (cameraController.checkIn != "--/--" &&
-                        cameraController.checkOut != "--/--")
-                    ? "Done Today"
-                    : "Punch In",
+                : (cameraController.checkIn.value != "--/--" &&
+                cameraController.checkOut.value != "--/--")
+                ? "Done Today"
+                : "Punch In",
             onTap: () {
-              (cameraController.checkIn != "--/--" &&
-                      cameraController.checkOut != "--/--")
+              (cameraController.checkIn.value != "--/--" &&
+                  cameraController.checkOut.value != "--/--")
                   ? Get.snackbar("Oops", "You've done for today..!",
-                      colorText: ConstColor.white,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 25, vertical: 15),
-                      backgroundColor: ConstColor.red.withOpacity(0.8),
-                      icon: Icon(
-                        Icons.error_outline,
-                        color: ConstColor.white,
-                        size: 30,
-                      ))
+                  colorText: ConstColor.white,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 25, vertical: 15),
+                  backgroundColor: ConstColor.red.withOpacity(0.8),
+                  icon: Icon(
+                    Icons.error_outline,
+                    color: ConstColor.white,
+                    size: 30,
+                  ))
                   : checkDistanceFromOffice();
             },
             btnColor: ConstColor.primary,
@@ -257,34 +252,34 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
             size: 30,
           ));
     }
-      // Get the current position of the device
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.best);
+    // Get the current position of the device
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
 
-      // Calculate the distance between the user's location and the office location
-      double distanceInMeters = Geolocator.distanceBetween(
-        position.latitude,
-        position.longitude,
-        officeLatitude,
-        officeLongitude,
-      );
+    // Calculate the distance between the user's location and the office location
+    double distanceInMeters = Geolocator.distanceBetween(
+      position.latitude,
+      position.longitude,
+      officeLatitude,
+      officeLongitude,
+    );
 
-      // Define the threshold distance (e.g., 200 meters)
-      double thresholdDistance = 15;
+    // Define the threshold distance (e.g., 200 meters)
+    double thresholdDistance = 15;
 
-      if (distanceInMeters <= thresholdDistance) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const CameraScreen()));
-      } else {
-        Get.snackbar("Error", "You're away from office..!",
-            colorText: ConstColor.white,
-            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-            backgroundColor: ConstColor.red.withOpacity(0.8),
-            icon: Icon(
-              Icons.error_outline,
-              color: ConstColor.white,
-              size: 30,
-            ));
-      }
+    if (distanceInMeters <= thresholdDistance) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (_) => const CameraScreen()));
+    } else {
+      Get.snackbar("Error", "You're away from office..!",
+          colorText: ConstColor.white,
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+          backgroundColor: ConstColor.red.withOpacity(0.8),
+          icon: Icon(
+            Icons.error_outline,
+            color: ConstColor.white,
+            size: 30,
+          ));
+    }
   }
 }

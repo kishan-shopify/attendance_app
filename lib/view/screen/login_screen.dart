@@ -86,6 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             btnLabel: "LOGIN",
                             onTap: () {
                               FocusScope.of(context).unfocus();
+                              controller.adminValidation(context);
                             },
                             btnColor: ConstColor.primary,
                             labelColor: ConstColor.blackText,

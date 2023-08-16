@@ -3,10 +3,10 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 class CameraScreenController extends GetxController {
   final currentDate = DateTime.now().day.toString();
-  String checkIn = "--/--";
-  String checkOut = "--/--";
-  String checkInUrl = "";
-  String checkOutUrl = "";
+  RxString checkIn = "--/--".obs;
+  RxString checkOut = "--/--".obs;
+  RxString checkInUrl = "".obs;
+  RxString checkOutUrl = "".obs;
 
   late final FaceDetector faceDetector;
 

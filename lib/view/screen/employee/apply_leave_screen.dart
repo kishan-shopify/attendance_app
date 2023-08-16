@@ -3,9 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../controller/home_screen_controller.dart';
+import '../../../controller/leave_controller.dart';
 import '../../../modal/const/const_color.dart';
 import '../../../modal/const/text_style.dart';
 import '../../../modal/custom/app_bar.dart';
@@ -20,11 +20,7 @@ class ApplyLeaveScreen extends StatefulWidget {
 
 class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
   final HomeScreenController homeController = Get.put(HomeScreenController());
-  final TextEditingController reason = TextEditingController();
-
-  String startDate = "";
-  String endDate = "";
-
+  final LeaveController leaveController = Get.put(LeaveController());
   static const List<String> leaveReason = <String>[
     'Casual Leave',
     'Medical Leave',
@@ -32,7 +28,6 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
     'Trip Leave',
     'Other'
   ];
-  String dropdownValue = leaveReason.first;
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +121,9 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
-                        startDate.isEmpty ? "Select Date" : startDate,
+                        leaveController.startDate.value.isEmpty
+                            ? "Select Date"
+                            : leaveController.startDate.value,
                         style: textStyleW500(
                             size.width * 0.04, ConstColor.blackText),
                       ),
@@ -150,7 +147,9 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
-                        endDate.isEmpty ? "Select Date" : endDate,
+                        leaveController.endDate.value.isEmpty
+                            ? "Select Date"
+                            : leaveController.endDate.value,
                         style: textStyleW500(
                             size.width * 0.04, ConstColor.blackText),
                       ),
@@ -186,25 +185,26 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: dropdownValue,
-                  hint: const Text("Select Reason"),
-                  isExpanded: true,
-                  elevation: 16,
-                  style: textStyleW500(size.width * 0.04, ConstColor.blackText),
-                  onChanged: (String? value) {
-                    setState(() {
-                      dropdownValue = value!;
-                    });
-                  },
-                  items:
-                      leaveReason.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
+                child: Obx(() => DropdownButton<String>(
+                      value: leaveController.selectedDropdownValue.value,
+                      hint: const Text("Select Leave Type"),
+                      isExpanded: true,
+                      elevation: 16,
+                      style: textStyleW500(
+                          size.width * 0.04, ConstColor.blackText),
+                      onChanged: (String? value) {
+                        if (value != null) {
+                          leaveController.updateSelectedDropdownValue(value);
+                        }
+                      },
+                      items: leaveReason
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    )),
               ),
             ),
             SizedBox(
@@ -234,7 +234,7 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: TextField(
-                controller: reason,
+                controller: leaveController.leaveReason.value,
                 cursorColor: ConstColor.blackText,
                 maxLines: null,
                 decoration: const InputDecoration(
@@ -249,7 +249,41 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
             CustomButton(
               btnLabel: "Apply",
               onTap: () {
-                sendEmail();
+                if (leaveController.startDate.isEmpty ||
+                    leaveController.endDate.isEmpty ||
+                    leaveController.leaveReason.value.text.isEmpty) {
+                  Get.snackbar("Error", "Please fill all details first..!",
+                      colorText: ConstColor.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 25, vertical: 15),
+                      backgroundColor: ConstColor.red.withOpacity(0.8),
+                      icon: Icon(
+                        Icons.error_outline,
+                        color: ConstColor.white,
+                        size: 30,
+                      ));
+                } else {
+                  DateTime startDate = DateFormat('dd-MM-yyyy')
+                      .parse(leaveController.startDate.value);
+                  DateTime endDate = DateFormat('dd-MM-yyyy')
+                      .parse(leaveController.endDate.value);
+
+                  if (endDate.isBefore(startDate)) {
+                    Get.snackbar(
+                        "Error", "End date cannot be before the start date..!",
+                        colorText: ConstColor.white,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 25, vertical: 15),
+                        backgroundColor: ConstColor.red.withOpacity(0.8),
+                        icon: Icon(
+                          Icons.error_outline,
+                          color: ConstColor.white,
+                          size: 30,
+                        ));
+                  } else {
+                    leaveController.applyLeave(context);
+                  }
+                }
               },
               btnColor: ConstColor.primary,
               labelColor: ConstColor.white,
@@ -277,37 +311,16 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
         );
       },
     );
+
     if (pickedDate != null) {
       String formattedDate = DateFormat('dd-MM-yyyy').format(pickedDate);
       setState(() {
         if (selectedDateType == "start") {
-          startDate = formattedDate;
+          leaveController.startDate.value = formattedDate;
         } else if (selectedDateType == "end") {
-          endDate = formattedDate;
+          leaveController.endDate.value = formattedDate;
         }
       });
-    }
-  }
-
-  void sendEmail() async {
-    final encodedStartDate = Uri.encodeFull(startDate);
-    final encodedEndDate = Uri.encodeFull(endDate);
-    // final encodedLeaveType = Uri.encodeComponent();
-    String leaveReasonString = reason.text;
-    final encodedReason = Uri.encodeFull(leaveReasonString);
-
-    final Uri email = Uri(
-        scheme: 'mailto',
-        path: 'rutvik.janovis@gmail.com',
-        queryParameters: {
-          'body':
-              'From: $encodedStartDate\nTo: $encodedEndDate\nReason: $encodedReason'
-        });
-
-    try {
-      await launchUrl(email);
-    } catch (e) {
-      log("Error");
     }
   }
 }

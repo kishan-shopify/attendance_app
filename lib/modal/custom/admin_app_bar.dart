@@ -1,25 +1,21 @@
-
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../controller/home_screen_controller.dart';
-import '../../view/screen/employee/home_screen.dart';
+import '../../view/screen/admin/home_screen.dart';
 import '../../view/screen/splash_screen.dart';
 import '../const/const_color.dart';
 import '../const/const_image.dart';
 
-class CustomAppBar extends StatefulWidget {
+class CustomAdminAppBar extends StatefulWidget {
   final Function onTap;
 
-  const CustomAppBar({super.key, required this.onTap});
+  const CustomAdminAppBar({super.key, required this.onTap});
 
   @override
-  State<CustomAppBar> createState() => _CustomAppBarState();
+  State<CustomAdminAppBar> createState() => _CustomAdminAppBarState();
 }
 
-class _CustomAppBarState extends State<CustomAppBar> {
-  final HomeScreenController homeController = Get.put(HomeScreenController());
+class _CustomAdminAppBarState extends State<CustomAdminAppBar> {
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +37,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             ),
             child: InkWell(
               onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (_) => EmployeeHomeScreen()));
-              homeController.newIndex.value = 0;
-              homeController.tappedIndex.value = 0;
-              homeController.notificationVisible.value = false;
+                Navigator.push(context, MaterialPageRoute(builder: (_) => AdminHomeScreen()));
               },
               child: Image.asset(
                 ConstImage.janovisLogo,
@@ -91,16 +84,12 @@ class _CustomAppBarState extends State<CustomAppBar> {
   logout() async {
     var sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.clear().then((value) => {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const SplashScreen(),
-            ),
-          ),
-          setState(() {
-            homeController.newIndex.value = 0;
-            homeController.tappedIndex.value = 0;
-          }),
-        });
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const SplashScreen(),
+        ),
+      ),
+    });
   }
 }

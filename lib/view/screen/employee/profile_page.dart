@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../controller/edit_profile_controller.dart';
 import '../../../controller/home_screen_controller.dart';
 import '../../../modal/const/const_color.dart';
 import '../../../modal/const/const_image.dart';
@@ -23,27 +24,19 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final HomeScreenController homeController = Get.put(HomeScreenController());
-  TextEditingController employeeID = TextEditingController();
-  TextEditingController emailID = TextEditingController();
-  TextEditingController mobileNo = TextEditingController();
-  TextEditingController birthDate = TextEditingController();
-  TextEditingController bloodGroup = TextEditingController();
-  TextEditingController aadhaarNo = TextEditingController();
-  TextEditingController panNo = TextEditingController();
-  TextEditingController address = TextEditingController();
-  TextEditingController emergencyNo = TextEditingController();
+  final EditProfileController editController = Get.put(EditProfileController());
 
   @override
   void initState() {
-    employeeID.text = User.employeeId;
-    emailID.text = User.mail;
-    mobileNo.text = User.mobile;
-    birthDate.text = User.birthdate;
-    bloodGroup.text = User.bloodGroup;
-    aadhaarNo.text = User.aadhaarNo;
-    panNo.text = User.panNo;
-    address.text = User.address;
-    emergencyNo.text = User.emergency;
+    editController.employeeID.value.text = User.employeeId;
+    editController.emailID.value.text = User.mail;
+    editController.mobileNo.value.text = User.mobile;
+    editController.birthDate.value.text = User.birthdate;
+    editController.bloodGroup.value.text = User.bloodGroup;
+    editController.aadhaarNo.value.text = User.aadhaarNo;
+    editController.panNo.value.text = User.panNo;
+    editController.address.value.text = User.address;
+    editController.emergencyNo.value.text = User.emergency;
     super.initState();
   }
 
@@ -59,13 +52,11 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           children: [
             SizedBox(
-              height:
-                  MediaQuery.of(context).padding.top + size.height * 0.02,
+              height: MediaQuery.of(context).padding.top + size.height * 0.02,
             ),
             CustomAppBar(
               onTap: () {
-                homeController.notificationVisible.value =
-                    !homeController.notificationVisible.value;
+                homeController.notificationVisible.value = !homeController.notificationVisible.value;
               },
             ),
             SizedBox(
@@ -98,7 +89,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      SizedBox(height: size.height * 0.02,),
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
                       GestureDetector(
                         onTap: () {
                           pickUploadProfilePic();
@@ -112,18 +105,21 @@ class _ProfilePageState extends State<ProfilePage> {
                             padding: const EdgeInsets.all(4.0),
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                border: Border.all(color: ConstColor.primary,width: 1.5)),
+                                border: Border.all(
+                                    color: ConstColor.primary, width: 1.5)),
                             child: ClipOval(
                               child: (User.profile == " ")
                                   ? Image.asset(
-                                ConstImage.rutvik,
-                              )
+                                      ConstImage.rutvik,
+                                    )
                                   : Image.network(User.profile),
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(height: size.height * 0.02,),
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
                       Text(
                         User.name,
                         style: TextStyle(
@@ -139,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          // size.width * 0.042,
+                            // size.width * 0.042,
                             fontWeight: FontWeight.w600,
                             color: ConstColor.blackText.withOpacity(0.6)),
                       ),
@@ -148,7 +144,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          // size.width * 0.042,
+                            // size.width * 0.042,
                             fontWeight: FontWeight.w600,
                             color: ConstColor.blackText.withOpacity(0.6)),
                       ),
@@ -157,59 +153,97 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       ProfileScreenField(
                         label: 'Employee ID:',
-                        controller: employeeID,
+                        controller: editController.employeeID.value,
                         isEditIcon: false,
                       ),
                       ProfileScreenField(
                         label: 'Email ID:',
-                        controller: emailID,
+                        controller: editController.emailID.value,
                         isEditIcon: true,
-                        pencilOnTap: () {},
+                        onSave: () async {
+                          QuerySnapshot snap = await FirebaseFirestore.instance
+                              .collection("Employee")
+                              .where('id', isEqualTo: User.employeeId)
+                              .get();
+
+                          await FirebaseFirestore.instance
+                              .collection("Employee")
+                              .doc(snap.docs[0].id)
+                              .update({'mail': editController.emailID.value.text});
+                        },
                       ),
                       ProfileScreenField(
                         label: 'Mobile No:',
-                        controller: mobileNo,
+                        controller: editController.mobileNo.value,
                         isEditIcon: true,
-                        pencilOnTap: () {},
+                        onSave: () async {
+                          QuerySnapshot snap = await FirebaseFirestore.instance
+                              .collection("Employee")
+                              .where('id', isEqualTo: User.employeeId)
+                              .get();
 
+                          await FirebaseFirestore.instance
+                              .collection("Employee")
+                              .doc(snap.docs[0].id)
+                              .update({
+                            'mobile': editController.mobileNo.value.text
+                          });
+                        },
                       ),
                       ProfileScreenField(
                         label: 'Birth Date:',
-                        controller: birthDate,
+                        controller: editController.birthDate.value,
                         isEditIcon: false,
-
                       ),
                       ProfileScreenField(
                         label: 'Blood Group:',
-                        controller: bloodGroup,
+                        controller: editController.bloodGroup.value,
                         isEditIcon: true,
-                        pencilOnTap: () {},
+                        onSave: () async {
+                          QuerySnapshot snap = await FirebaseFirestore.instance
+                              .collection("Employee")
+                              .where('id', isEqualTo: User.employeeId)
+                              .get();
 
+                          await FirebaseFirestore.instance
+                              .collection("Employee")
+                              .doc(snap.docs[0].id)
+                              .update({'bloodgroup': editController.bloodGroup.value.text
+                          });
+                        },
                       ),
                       ProfileScreenField(
                         label: 'Aadhaar No:',
-                        controller: aadhaarNo,
+                        controller: editController.aadhaarNo.value,
                         isEditIcon: false,
-
                       ),
                       ProfileScreenField(
                         label: 'PAN No:',
-                        controller: panNo,
+                        controller: editController.panNo.value,
                         isEditIcon: false,
-
                       ),
                       ProfileScreenField(
                         label: 'Address:',
-                        controller: address,
+                        controller: editController.address.value,
                         isEditIcon: true,
-                        pencilOnTap: () {},
+                        onSave: () async {
+                          QuerySnapshot snap = await FirebaseFirestore.instance
+                              .collection("Employee")
+                              .where('id', isEqualTo: User.employeeId)
+                              .get();
 
+                          await FirebaseFirestore.instance
+                              .collection("Employee")
+                              .doc(snap.docs[0].id)
+                              .update({
+                            'address': editController.address.value.text
+                          });
+                        },
                       ),
                       ProfileScreenField(
                         label: 'Emergency No:',
-                        controller: emergencyNo,
+                        controller: editController.emergencyNo.value,
                         isEditIcon: false,
-
                       ),
                     ],
                   ),
@@ -225,7 +259,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  void pickUploadProfilePic() async {
+void pickUploadProfilePic() async {
     final image = await ImagePicker().pickImage(
       source: ImageSource.gallery,
       maxHeight: 256,
@@ -245,7 +279,12 @@ class _ProfilePageState extends State<ProfilePage> {
         User.profile = value;
       });
 
-      await FirebaseFirestore.instance.collection("Employee").doc(User.id).update({'profile': value});
+      await FirebaseFirestore.instance
+          .collection("Employee")
+          .doc(User.id)
+          .update({'profile': value});
     });
   }
+
+
 }

@@ -37,10 +37,22 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   void initState() {
     getId().then((value) {
       _getCredentials();
+      _getProfilePic();
       homeController.fetchPresentDays(User.id, _month);
     });
     _getCredentials();
+    _getProfilePic();
     super.initState();
+  }
+
+  void _getProfilePic() async {
+    DocumentSnapshot doc = await FirebaseFirestore.instance
+        .collection("Employee")
+        .doc(User.id)
+        .get();
+    setState(() {
+      User.profile = doc['profile'] ?? "";
+    });
   }
 
   void _getCredentials() async {
@@ -61,7 +73,6 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
         User.password = doc['password'] ?? "";
         User.bloodGroup = doc['bloodgroup'] ?? "";
         User.mobile = doc['mobile'] ?? "";
-        User.profile = doc['profile'] ?? "";
         User.emergency = doc['emergency'] ?? "";
       });
     } catch (e) {
@@ -96,8 +107,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
               child: Column(
                 children: [
                   SizedBox(
-                    height:
-                        MediaQuery.of(context).padding.top + size.height * 0.02,
+                    height: MediaQuery.of(context).padding.top + size.height * 0.02,
                   ),
                   CustomAppBar(
                     onTap: () {

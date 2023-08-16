@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:attendance_app/modal/modal_class/user.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -10,7 +12,6 @@ import '../../../controller/home_screen_controller.dart';
 import '../../../modal/const/const_image.dart';
 import '../../../modal/const/text_style.dart';
 import '../../../modal/custom/custom_button.dart';
-import '../../../modal/modal_class/user.dart';
 import '../../../modal/const/const_color.dart';
 
 class AttendanceScreen extends StatefulWidget {
@@ -24,7 +25,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   final HomeScreenController homeController = Get.put(HomeScreenController());
   final TextEditingController punchIn = TextEditingController();
   final TextEditingController punchOut = TextEditingController();
-  final FocusNode focusNode = FocusNode();
+  final TextEditingController reason = TextEditingController();
+  FocusNode punchInFocus = FocusNode();
+  FocusNode punchOutFocus = FocusNode();
+
 
   var month;
   DateTime currentDate = DateTime.now();
@@ -39,14 +43,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
   void initState() {
     updateMonth(0);
-    focusNode.addListener(onFocusChange);
+    punchInFocus.addListener(onFocusChange);
+    punchOutFocus.addListener(onFocusChange);
     super.initState();
   }
 
   @override
   void dispose() {
-    focusNode.removeListener(onFocusChange);
-    focusNode.dispose();
+    punchOutFocus.removeListener(onFocusChange);
+    punchInFocus.removeListener(onFocusChange);
+    punchOutFocus.dispose();
+    punchInFocus.dispose();
     super.dispose();
   }
 
@@ -83,8 +90,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 },
                 child: Icon(Icons.arrow_back)),
             Expanded(child: Container()),
-            Text(
-              DateFormat('MMMM').format(currentDate),
+            Text(DateFormat('MMMM').format(currentDate),
               // _month,
               style: TextStyle(
                 fontWeight: FontWeight.w700,
@@ -134,7 +140,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       final date = doc['date'].toDate();
                       final checkIn = doc['checkIn'];
                       final checkOut = doc['checkOut'];
-
                       return Container(
                         width: size.width,
                         margin: const EdgeInsets.only(bottom: 10),
@@ -153,10 +158,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                     width: 10,
                                   ),
                                   Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
+                                    margin: const EdgeInsets.symmetric(vertical: 10),
+                                    padding: const EdgeInsets.symmetric(vertical: 5),
                                     width: 70,
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(14),
@@ -238,7 +241,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                if(index != 0 ){
+                                if (index != 0) {
                                   log("INDEX  ===  $index");
                                   punchIn.text = checkIn;
                                   punchOut.text = checkOut;
@@ -317,7 +320,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     if (checkIn == "--/--" || checkOut == "--/--") {
       return "";
     } else {
-      if (checkInDateTime.isAfter(lateComingDateTime) && checkOutDateTime.isBefore(earlyGoingDateTime)) {
+      if (checkInDateTime.isAfter(lateComingDateTime) &&
+          checkOutDateTime.isBefore(earlyGoingDateTime)) {
         return "L/E";
       } else if (checkInDateTime.isAfter(lateComingDateTime)) {
         return "L";
@@ -368,12 +372,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       if (checkInDateTime.isAfter(lateComingDateTime) &&
           checkOutDateTime.isBefore(earlyGoingDateTime)) {
         return ConstColor.primary;
-      } else if(checkIn != "--/--" && checkOut == "--/--"){
+      } else if (checkIn != "--/--" && checkOut == "--/--") {
         return ConstColor.red;
       } else if (checkInDateTime.isAfter(lateComingDateTime)) {
-        return ConstColor.primary;
+        return ConstColor.red;
       } else if (checkOutDateTime.isBefore(earlyGoingDateTime)) {
-        return ConstColor.primary;
+        return ConstColor.red;
       } else {
         return ConstColor.lightGreen;
       }
@@ -399,58 +403,58 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             ),
           ],
         ),
-        content: Container(
-          height: size.height / 5,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 25,
-              ),
-              Text(
-                "Punch In :",
-                style: TextStyle(
-                  fontSize: size.width * 0.041,
-                  color: ConstColor.blackText.withOpacity(0.9),
+        content: SingleChildScrollView(
+          child: Container(
+            height: size.height / 3.3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 25,
                 ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border(
-                  bottom: BorderSide(color: ConstColor.blackText),
-                )),
-                height: 25,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        cursorColor: ConstColor.blackText,
-                        controller: punchIn,
-                        focusNode: focusNode,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                        ),
-                        readOnly: punchInEdit,
-                        onEditingComplete: closeKeyboard,
-                        style: TextStyle(
-                          fontSize: size.width * 0.04,
-                          fontWeight: FontWeight.w600,
-                          color: ConstColor.blackText.withOpacity(0.6),
+                Text(
+                  "Punch In :",
+                  style: TextStyle(
+                    fontSize: size.width * 0.041,
+                    color: ConstColor.blackText.withOpacity(0.9),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      border: Border(
+                    bottom: BorderSide(color: ConstColor.blackText),
+                  )),
+                  height: 25,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          cursorColor: ConstColor.blackText,
+                          controller: punchIn,
+                          focusNode: punchInFocus,
+                          onTap: onFocusChange,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                          ),
+                          readOnly: punchInEdit,
+                          onEditingComplete: closeKeyboard,
+                          style: TextStyle(
+                            fontSize: size.width * 0.04,
+                            fontWeight: FontWeight.w600,
+                            color: ConstColor.blackText.withOpacity(0.6),
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    GestureDetector(
-                        onTap: (){
+                      SizedBox(
+                        width: 10,
+                      ),
+                      GestureDetector(
+                        onTap: () {
                           setState(() {
                             punchInEdit = false;
                           });
                           if (!punchInEdit) {
-                            // widget.pencilOnTap?.call();
-                            // Request focus on the text field
-                            focusNode.requestFocus();
+                            punchInFocus.requestFocus();
                           }
                         },
                         child: Image.asset(
@@ -459,51 +463,57 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           width: 20,
                         ),
                       ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                "Punch Out :",
-                style: TextStyle(
-                  fontSize: size.width * 0.041,
-                  color: ConstColor.blackText.withOpacity(0.9),
+                const SizedBox(
+                  height: 15,
                 ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border(
-                  bottom: BorderSide(color: ConstColor.blackText),
-                )),
-                height: 25,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        cursorColor: ConstColor.blackText,
-                        controller: punchOut,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                        ),
-                        readOnly: punchOutEdit,
-                        onEditingComplete: closeKeyboard,
-                        style: TextStyle(
-                          fontSize: size.width * 0.04,
-                          fontWeight: FontWeight.w600,
-                          color: ConstColor.blackText.withOpacity(0.6),
+                Text(
+                  "Punch Out :",
+                  style: TextStyle(
+                    fontSize: size.width * 0.041,
+                    color: ConstColor.blackText.withOpacity(0.9),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      border: Border(
+                    bottom: BorderSide(color: ConstColor.blackText),
+                  )),
+                  height: 25,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          cursorColor: ConstColor.blackText,
+                          controller: punchOut,
+                          focusNode: punchOutFocus,
+                          onTap: onFocusChange,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                          ),
+                          readOnly: punchOutEdit,
+                          onEditingComplete: closeKeyboard,
+                          style: TextStyle(
+                            fontSize: size.width * 0.04,
+                            fontWeight: FontWeight.w600,
+                            color: ConstColor.blackText.withOpacity(0.6),
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    GestureDetector(
-                        onTap: (){
+                      SizedBox(
+                        width: 10,
+                      ),
+                      GestureDetector(
+                        onTap: () {
                           setState(() {
                             punchOutEdit = false;
                           });
+
+                          if (!punchOutEdit) {
+                            punchOutFocus.requestFocus();
+                          }
                         },
                         child: Image.asset(
                           ConstImage.edit,
@@ -511,26 +521,72 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           width: 20,
                         ),
                       ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  "Remark :",
+                  style: TextStyle(
+                    fontSize: size.width * 0.041,
+                    color: ConstColor.blackText.withOpacity(0.9),
+                  ),
+                ),
+                SizedBox(height: 5,),
+                Container(
+                  height: 55,
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: ConstColor.blackText),
+                    borderRadius: BorderRadius.circular(5)
+                  ),
+                  child: TextField(
+                    controller: reason,
+                    cursorColor: ConstColor.blackText,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Enter reason..."
+                    ),
+                  ),
+
+                ),
+              ],
+            ),
           ),
         ),
         actions: [
           CustomButton(
               btnLabel: "Submit Request",
               onTap: () {
-                Navigator.pop(context);
-                Fluttertoast.showToast(
-                    msg: "Request send successfully...!", //message to show toast
-                    toastLength: Toast.LENGTH_LONG, //duration for message to show
-                    gravity: ToastGravity.CENTER, //where you want to show, top, bottom
-                    timeInSecForIosWeb: 1, //for iOS only
-                    //backgroundColor: Colors.red, //background Color for message
-                    textColor: ConstColor.blackText, //message text color
-                    fontSize: 16.0 //message font size
-                );
+                if(reason.text.isEmpty){
+                  Get.snackbar("Error", "Please Enter Reason..!",
+                      colorText: ConstColor.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                      backgroundColor: ConstColor.red.withOpacity(0.8),
+                      icon: Icon(
+                        Icons.error_outline,
+                        color: ConstColor.white,
+                        size: 30,
+                      ));
+                }else{
+                  Navigator.pop(context);
+                  Fluttertoast.showToast(
+                      msg: "Request send successfully...!",
+                      //message to show toast
+                      toastLength: Toast.LENGTH_LONG,
+                      //duration for message to show
+                      gravity: ToastGravity.CENTER,
+                      //where you want to show, top, bottom
+                      timeInSecForIosWeb: 1,
+                      //for iOS only
+                      //backgroundColor: Colors.red, //background Color for message
+                      textColor: ConstColor.blackText,
+                      //message text color
+                      fontSize: 16.0 //message font size
+                  );
+                }
               },
               btnColor: ConstColor.primary,
               labelColor: ConstColor.white),
@@ -540,15 +596,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   void onFocusChange() {
-    if (focusNode.hasFocus) {
+    if (punchInFocus.hasFocus || punchOutFocus.hasFocus) {
       // Open the keyboard
-      FocusScope.of(context).requestFocus(focusNode);
+      // FocusScope.of(context).requestFocus(punchInFocus);
+      SystemChannels.textInput.invokeMethod('TextInput.show');
     }
   }
 
-  void  closeKeyboard() {
-    // Close the keyboard
-    focusNode.unfocus();
+  void closeKeyboard() {
+    punchInFocus.unfocus();
+    punchOutFocus.unfocus();
   }
-
 }

@@ -30,7 +30,9 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreen extends State<CameraScreen> {
-  final CameraScreenController controller = Get.put(CameraScreenController());
+  final CameraScreenController cameraController = Get.put(CameraScreenController());
+
+
 
   // ignore: prefer_typing_uninitialized_variables
   XFile? _imageFile;
@@ -86,24 +88,18 @@ class _CameraScreen extends State<CameraScreen> {
           .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
           .get();
 
-      log("INPUT == $snap");
-      log("INPUT 2 == $snap2");
-
-      setState(() {
-        controller.checkIn = snap2['checkIn'];
-        controller.checkOut = snap2['checkOut'];
-        controller.checkInUrl = snap2['checkInImage'];
-        controller.checkOutUrl = snap2['checkOutImage'];
-      });
+      cameraController.checkIn.value = snap2['checkIn'] ?? "--/--";
+      cameraController.checkOut.value = snap2['checkOut'] ?? "--/--";
+      cameraController.checkInUrl.value = snap2['checkInImage'] ?? "";
+      cameraController.checkOutUrl.value = snap2['checkOutImage'] ?? "";
     } catch (e) {
-      setState(() {
-        controller.checkIn = "--/--";
-        controller.checkOut = "--/--";
-        controller.checkInUrl = "";
-        controller.checkOutUrl = "";
-      });
+      cameraController.checkIn.value = "--/--";
+      cameraController.checkOut.value = "--/--";
+      cameraController.checkInUrl.value = "";
+      cameraController.checkOutUrl.value = "";
     }
   }
+
 
   @override
   void initState() {
@@ -116,7 +112,7 @@ class _CameraScreen extends State<CameraScreen> {
   @override
   void dispose() {
     _controller.dispose();
-    controller.faceDetector.close();
+    cameraController.faceDetector.close();
     super.dispose();
   }
 
@@ -134,7 +130,7 @@ class _CameraScreen extends State<CameraScreen> {
           color: ConstColor.blackText.withOpacity(0.7),
         ),
         title: Text(
-          (controller.checkIn == "--/--") ? "Punch In" : "Punch Out",
+          (cameraController.checkIn.value == "--/--") ? "Punch In" : "Punch Out",
           style: textStyleW600(size.width * 0.053, ConstColor.blackText),
         ),
       ),
@@ -176,9 +172,7 @@ class _CameraScreen extends State<CameraScreen> {
                         borderRadius: BorderRadius.circular(size.width / 2),
                         child: (!_controller.value.isInitialized)
                             ? Container()
-                            : CameraPreview(
-                                _controller,
-                              ),
+                            : CameraPreview(_controller),
                       ),
                     );
                   } else {
@@ -193,8 +187,7 @@ class _CameraScreen extends State<CameraScreen> {
             height: size.height * 0.05,
           ),
           Text(
-            (controller.checkIn == "--/--") ?
-
+            (cameraController.checkIn.value == "--/--") ?
             "Verify to Punch In" : "Verify to Punch Out",
             style: textStyleW600(size.width * 0.058, ConstColor.blackText),
           ),
@@ -227,19 +220,18 @@ class _CameraScreen extends State<CameraScreen> {
         });
         final File filePicked = File(_imageFile!.path);
         inputImage = InputImage.fromFile(filePicked);
-        faces = await controller.faceDetector.processImage(inputImage);
+        faces = await cameraController.faceDetector.processImage(inputImage);
         try {
           if (faces.isNotEmpty) {
             print("FACE RECOGNIZE ....!");
-            if (controller.checkIn != "--/--") {
+            if (cameraController.checkIn.value != "--/--") {
               clockOut(filePicked);
             } else {
               clockIn(filePicked);
             }
 
             Navigator.popUntil(context, (route) => route.isFirst);
-            Navigator.pushReplacement(
-              context,
+            Navigator.pushReplacement(context,
               CupertinoPageRoute(
                 builder: (context) => const EmployeeHomeScreen(),
               ),
@@ -293,15 +285,14 @@ class _CameraScreen extends State<CameraScreen> {
   }
 
   clockIn(File filePicked) async {
+    log("STARTED..");
     QuerySnapshot snap = await FirebaseFirestore.instance
         .collection("Employee")
         .where('id', isEqualTo: User.employeeId)
         .get();
 
-    DocumentSnapshot snap2 = await FirebaseFirestore.instance
-        .collection("Employee")
-        .doc(snap.docs[0].id)
-        .collection("Record")
+    DocumentSnapshot snap2 = await FirebaseFirestore.instance.collection("Employee")
+        .doc(snap.docs[0].id).collection("Record")
         .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
         .get();
 
@@ -314,11 +305,11 @@ class _CameraScreen extends State<CameraScreen> {
       String checkInTime = DateFormat('hh:mm a').format(DateTime.now());
 
       String fileName =
-          "${User.employeeId}_checkIn_${controller.currentDate}${DateFormat('MMMM').format(DateTime.now())}";
+          "${User.employeeId}_checkIn_${cameraController.currentDate}${DateFormat('MMMM').format(DateTime.now())}";
 
       Reference referenceImagesUpload = referenceImages.child(fileName);
       await referenceImagesUpload.putFile(filePicked);
-      controller.checkInUrl = await referenceImagesUpload.getDownloadURL();
+      cameraController.checkInUrl.value = await referenceImagesUpload.getDownloadURL();
 
       await FirebaseFirestore.instance
           .collection("Employee")
@@ -328,7 +319,7 @@ class _CameraScreen extends State<CameraScreen> {
           .set({
         'date': Timestamp.now(),
         'checkIn': checkInTime,
-        'checkInImage': controller.checkInUrl,
+        'checkInImage': cameraController.checkInUrl.value,
         'checkOut': "--/--",
         'checkOutImage': "",
       });
@@ -341,15 +332,11 @@ class _CameraScreen extends State<CameraScreen> {
   }
 
   clockOut(File filePicked) async {
-    QuerySnapshot snap = await FirebaseFirestore.instance
-        .collection("Employee")
-        .where('id', isEqualTo: User.employeeId)
-        .get();
+    QuerySnapshot snap = await FirebaseFirestore.instance.collection("Employee")
+        .where('id', isEqualTo: User.employeeId).get();
 
-    DocumentSnapshot snap2 = await FirebaseFirestore.instance
-        .collection("Employee")
-        .doc(snap.docs[0].id)
-        .collection("Record")
+    DocumentSnapshot snap2 = await FirebaseFirestore.instance.collection("Employee")
+        .doc(snap.docs[0].id).collection("Record")
         .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
         .get();
 
@@ -359,17 +346,14 @@ class _CameraScreen extends State<CameraScreen> {
     Reference referenceImages = reference.child("checkImages");
 
     try {
-      log("CATCH");
-      log("CATCH  ===  ");
       String checkOutTime = DateFormat('hh:mm a').format(DateTime.now());
 
-      String fileName =
-          "${User.employeeId}_checkOut_${controller.currentDate}${DateFormat('MMMM').format(DateTime.now())}";
+      String fileName = "${User.employeeId}_checkOut_${cameraController.currentDate}${DateFormat('MMMM').format(DateTime.now())}";
 
       Reference referenceImagesUpload = referenceImages.child(fileName);
 
       await referenceImagesUpload.putFile(filePicked);
-      controller.checkOutUrl = await referenceImagesUpload.getDownloadURL();
+      cameraController.checkOutUrl.value = await referenceImagesUpload.getDownloadURL();
 
       String checkIn = snap2['checkIn'];
 
@@ -377,9 +361,9 @@ class _CameraScreen extends State<CameraScreen> {
           .doc(DateFormat('dd MMMM yyyy').format(DateTime.now())).update({
         'date': Timestamp.now(),
         'checkIn': checkIn,
-        'checkInImage': controller.checkInUrl,
+        'checkInImage': cameraController.checkInUrl.value,
         'checkOut': checkOutTime,
-        'checkOutImage': controller.checkOutUrl,
+        'checkOutImage': cameraController.checkOutUrl.value,
       });
     } catch (e) {
       log("CHECK OUT CATCH");

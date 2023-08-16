@@ -5,14 +5,15 @@ import '../const/const_image.dart';
 
 class ProfileScreenField extends StatefulWidget {
   final String label;
-  final Function? pencilOnTap;
+  final Function? onSave;
   final bool isEditIcon;
+
   final TextEditingController controller;
 
   const ProfileScreenField({
     Key? key,
     required this.label,
-    this.pencilOnTap,
+    this.onSave,
     required this.controller,
     this.isEditIcon = false,
   }) : super(key: key);
@@ -24,6 +25,7 @@ class ProfileScreenField extends StatefulWidget {
 class _ProfileScreenFieldState extends State<ProfileScreenField> {
   final FocusNode focusNode = FocusNode();
   bool readOnly = true;
+  bool saveButton = false;
 
   @override
   void initState() {
@@ -45,11 +47,10 @@ class _ProfileScreenFieldState extends State<ProfileScreenField> {
     }
   }
 
-  void  closeKeyboard() {
+  void closeKeyboard() {
     // Close the keyboard
     focusNode.unfocus();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +83,7 @@ class _ProfileScreenFieldState extends State<ProfileScreenField> {
                     border: InputBorder.none,
                   ),
                   readOnly: readOnly,
-                  onEditingComplete: (){
+                  onEditingComplete: () {
                     focusNode.unfocus();
                   },
                   style: TextStyle(
@@ -96,23 +97,38 @@ class _ProfileScreenFieldState extends State<ProfileScreenField> {
                 width: 10,
               ),
               if (widget.isEditIcon)
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      readOnly = false;
-                    });
-                    if (!readOnly) {
-                      widget.pencilOnTap?.call();
-                      // Request focus on the text field
-                      focusNode.requestFocus();
-                    }
-                  },
-                  child: Image.asset(
-                    ConstImage.edit,
-                    height: 20,
-                    width: 20,
-                  ),
-                ),
+                (saveButton)
+                    ? ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ConstColor.primary,
+                        ),
+                        onPressed: () {
+                          closeKeyboard();
+                        setState(() {
+                          saveButton = false;
+                        });
+                          widget.onSave!();
+                        },
+                        child: Text("Save"))
+                    : GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            saveButton = true;
+                            readOnly = false;
+
+                          });
+                          if (!readOnly) {
+                            widget.onSave?.call();
+                            // Request focus on the text field
+                            focusNode.requestFocus();
+                          }
+                        },
+                        child: Image.asset(
+                          ConstImage.edit,
+                          height: 20,
+                          width: 20,
+                        ),
+                      ),
             ],
           ),
         ),

@@ -11,7 +11,10 @@ class ConstImage {
   static const String cross = "assets/images/cross.png";
   static const String rutvik = "assets/images/user.png";
   static const String changePassword = "assets/images/change_password.png";
+  static const String leaveFill = "assets/images/leave_fill.png";
   static const String leave = "assets/images/leave.png";
+  static const String clock = "assets/images/clock.png";
+
   static const String notificationSetting = "assets/images/notification_2.png";
   static const String profile = "assets/images/profile.png";
   static const String team = "assets/images/team.png";

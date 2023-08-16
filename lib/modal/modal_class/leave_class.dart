@@ -1,13 +1,15 @@
-class LeaveClass {
+class LeaveData {
+  final String startDate;
+  final String endDate;
   final String leaveType;
-  final String fromDate;
-  final String toDate;
+  final String status;
   final String reason;
 
-  LeaveClass({
+  LeaveData({
+    required this.startDate,
+    required this.endDate,
     required this.leaveType,
-    required this.fromDate,
-    required this.toDate,
+    required this.status,
     required this.reason,
   });
 }

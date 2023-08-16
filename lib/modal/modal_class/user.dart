@@ -19,4 +19,3 @@ class User {
   static double long = 0;
   static bool canEdit = true;
 }
-

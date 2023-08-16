@@ -1,22 +1,16 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../const/const_color.dart';
 import '../const/const_image.dart';
 import '../const/text_style.dart';
+import '../modal_class/leave_class.dart';
 
 class LeaveView extends StatelessWidget {
-  final String leaveType;
-  final String fromDate;
-  final String toDate;
-  final String reason;
+  final LeaveData leave;
 
-  const LeaveView(
-      {Key? key,
-      required this.leaveType,
-      required this.fromDate,
-      required this.toDate,
-      required this.reason})
-      : super(key: key);
+  const LeaveView({Key? key, required this.leave}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,27 +35,41 @@ class LeaveView extends StatelessWidget {
                   color: ConstColor.primary,
                 ),
                 child: Text(
-                  leaveType,
+                  "FL",
+                  // "leave.leaveType",
                   style:
                       textStyleW600(size.width * 0.043, ConstColor.blackText),
                 ),
               ),
               Container(
-                  alignment: Alignment.center,
-                  width: size.width * 0.65,
-                  child: Text(
-                    "From $fromDate - $toDate",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style:
-                        textStyleW600(size.width * 0.037, ConstColor.blackText),
-                  )),
+                alignment: Alignment.center,
+                width: size.width * 0.65,
+                child: Text(
+                  "${leave.startDate}  --   ${leave.endDate}",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: textStyleW600(size.width * 0.037, ConstColor.blackText),
+                ),
+              ),
               Row(
                 children: [
-                  Image.asset(
-                    ConstImage.view,
-                    height: 20,
-                    width: 20,
+                  GestureDetector(
+                    onTap : (){
+                      showDialog(context: context, builder: (_){
+                        return SimpleDialog(
+                          contentPadding: EdgeInsets.symmetric(horizontal: size.width * 0.07,vertical: 25),
+                          title: Text("Reason",style: textStyleW600(size.width * 0.04, ConstColor.blackText),),
+                          children: [
+                            Text("${leave.reason}")
+                          ],
+                        );
+                      });
+                    },
+                    child: Image.asset(
+                      ConstImage.view,
+                      height: 20,
+                      width: 20,
+                    ),
                   ),
                   SizedBox(
                     width: 10,
