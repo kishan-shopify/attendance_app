@@ -69,7 +69,7 @@ class EmployeeController extends GetxController {
         CollectionReference leavesCollection = employees.doc(employeeId).collection('Leaves');
 
         // Get all documents from the 'Leaves' sub-collection
-        QuerySnapshot leavesSnapshot = await leavesCollection.get();
+        QuerySnapshot leavesSnapshot = await leavesCollection.orderBy('date', descending: false).get();
 
         // Iterate through each leave document and add it to the list
         for (QueryDocumentSnapshot leaveDoc in leavesSnapshot.docs) {
@@ -86,6 +86,38 @@ class EmployeeController extends GetxController {
       print('Error fetching leaves: $e');
       return [];
     }
+  }
+
+  Future<List<Map<String, dynamic>>> getTimeRequest() async{
+
+    List<Map<String, dynamic>> timeRequestList = [];
+
+    try {
+      CollectionReference employees = FirebaseFirestore.instance.collection('Employee');
+      QuerySnapshot employeeSnapshot = await employees.get();
+
+      for (QueryDocumentSnapshot employeeDoc in employeeSnapshot.docs) {
+        String employeeId = employeeDoc.id;
+        Map<String, dynamic> employeeData = employeeDoc.data() as Map<String, dynamic>;
+        String employeeName = employeeData['name']; // Get the employee name
+
+        CollectionReference requestCollection = employees.doc(employeeId).collection('TimeChange');
+
+        QuerySnapshot requestSnapshot = await requestCollection.orderBy('date', descending: false).get();
+
+        for (QueryDocumentSnapshot requestDoc in requestSnapshot.docs) {
+          Map<String, dynamic>? requestData = requestDoc.data() as Map<String, dynamic>?;
+          requestData?['employeeId'] = employeeId;
+          requestData?['employeeName'] = employeeName;
+          timeRequestList.add(requestData!);
+        }
+      }
+      return timeRequestList;
+    } catch (e) {
+      print('Error fetching data: $e');
+      return [];
+    }
+
   }
 
 }

@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:attendance_app/modal/const/const_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,7 @@ import 'package:intl/intl.dart';
 
 import '../../../controller/home_screen_controller.dart';
 import '../../../modal/const/const_color.dart';
+import '../../../modal/const/const_image.dart';
 import '../../../modal/const/list.dart';
 import '../../../modal/custom/app_bar.dart';
 import '../../../modal/custom/bottom_nav_bar.dart';
@@ -50,6 +50,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
         .collection("Employee")
         .doc(User.id)
         .get();
+
     setState(() {
       User.profile = doc['profile'] ?? "";
     });

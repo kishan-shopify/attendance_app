@@ -1,20 +1,21 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../modal/const/const_color.dart';
 import '../modal/custom/progress_indicator.dart';
 import '../modal/modal_class/leave_class.dart';
 import '../modal/modal_class/user.dart';
-import '../view/screen/employee/home_screen.dart';
+import '../view/screen/employee/leave_section.dart';
 import 'home_screen_controller.dart';
 
 class LeaveController extends GetxController {
   RxList<LeaveData> pendingLeaves = <LeaveData>[].obs;
   RxList<LeaveData> approvedLeaves = <LeaveData>[].obs;
   RxList<LeaveData> rejectedLeaves = <LeaveData>[].obs;
-
 
   RxString startDate = ''.obs;
   RxString endDate = ''.obs;
@@ -26,8 +27,6 @@ class LeaveController extends GetxController {
       .doc(User.id)
       .collection('Leaves')
       .snapshots();
-
-
 
   final HomeScreenController homeController = Get.put(HomeScreenController());
 
@@ -55,31 +54,30 @@ class LeaveController extends GetxController {
 
     log("APPLIED...");
     try {
-      String formattedStartDate = DateFormat('dd MMMM yyyy').format(
-          DateFormat('dd-MM-yyyy').parse(startDate.value)
-      );
-      String formattedEndDate = DateFormat('dd MMMM yyyy').format(
-          DateFormat('dd-MM-yyyy').parse(endDate.value)
-      );
-
+      String formattedStartDate = DateFormat('dd MMMM yyyy')
+          .format(DateFormat('dd-MM-yyyy').parse(startDate.value));
+      String formattedEndDate = DateFormat('dd MMMM yyyy')
+          .format(DateFormat('dd-MM-yyyy').parse(endDate.value));
 
       ProgressDialog().show(context);
+
+      String leaveId = FirebaseFirestore.instance.collection("Employee").doc().id;
+
       await FirebaseFirestore.instance
           .collection("Employee")
           .doc(snap.docs[0].id)
           .collection("Leaves")
-          .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+          .doc(leaveId)
           .set({
         "date": Timestamp.now(),
-        "updatedDate" : Timestamp.now(),
+        "updatedDate": Timestamp.now(),
         "status": "Pending",
         "startDate": formattedStartDate,
         "endDate": formattedEndDate,
-        "remark" : "",
+        "remark": "",
         "leaveType": selectedDropdownValue.value,
         "reason": leaveReason.value.text,
       });
-
 
       leaveReason.value.clear();
       startDate.value = "";
@@ -87,13 +85,28 @@ class LeaveController extends GetxController {
 
       ProgressDialog().hide(context);
 
-      Navigator.push(context, MaterialPageRoute(builder: (_) => EmployeeHomeScreen()));
+      Fluttertoast.showToast(
+          msg: "Leave Applied successfully...!",
+          //message to show toast
+          toastLength: Toast.LENGTH_LONG,
+          //duration for message to show
+          gravity: ToastGravity.CENTER,
+          //where you want to show, top, bottom
+          timeInSecForIosWeb: 1,
+          //for iOS only
+          //backgroundColor: Colors.red, //background Color for message
+          textColor: ConstColor.blackText,
+          //message text color
+          fontSize: 16.0 //message font size
+          );
+
+      Navigator.push(
+          context, MaterialPageRoute(builder: (_) => LeaveSection()));
       homeController.newIndex.value = 0;
       homeController.tappedIndex.value = 0;
       homeController.notificationVisible.value = false;
 
-      log("GO TO THE HOME SCREEN");
-
+      log("GO TO THE LEAVE SECTION SCREEN");
     } catch (error) {
       log("Getting error for applying leave :- $error");
     }
@@ -123,5 +136,4 @@ class LeaveController extends GetxController {
       }
     }
   }
-
 }

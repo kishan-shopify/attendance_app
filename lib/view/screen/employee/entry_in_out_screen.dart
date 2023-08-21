@@ -25,7 +25,8 @@ class EntryInOutScreen extends StatefulWidget {
 
 class _EntryInOutScreenState extends State<EntryInOutScreen> {
   final HomeScreenController homeController = Get.put(HomeScreenController());
-  final CameraScreenController cameraController = Get.put(CameraScreenController());
+  final CameraScreenController cameraController =
+  Get.put(CameraScreenController());
   final String _month = DateFormat('MMMM').format(DateTime.now());
   static const double officeLatitude = 23.027021;
   static const double officeLongitude = 72.5063857;
@@ -41,7 +42,6 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
     });
   }
 
-
   Future<void> getRecord() async {
     try {
       QuerySnapshot snap = await FirebaseFirestore.instance
@@ -49,10 +49,8 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
           .where('id', isEqualTo: User.employeeId)
           .get();
 
-      DocumentSnapshot snap2 = await FirebaseFirestore.instance
-          .collection("Employee")
-          .doc(snap.docs[0].id)
-          .collection("Record")
+      DocumentSnapshot snap2 = await FirebaseFirestore.instance.collection("Employee")
+          .doc(snap.docs[0].id).collection("Record")
           .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
           .get();
 
@@ -119,7 +117,9 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
                 child: Container(),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+                width: size.width * 0.70,
+                alignment: Alignment.center,
+                // padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
                 decoration: BoxDecoration(
                   color: ConstColor.primary.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(10),
@@ -131,7 +131,7 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
                     return Text(
                       DateFormat('hh:mm:ss a').format(DateTime.now()),
                       style: textStyleW600(
-                        size.width * 0.1,
+                        size.width * 0.098,
                         ConstColor.blackText,
                       ),
                     );
@@ -252,34 +252,38 @@ class _EntryInOutScreenState extends State<EntryInOutScreen> {
             size: 30,
           ));
     }
-    // Get the current position of the device
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best);
 
-    // Calculate the distance between the user's location and the office location
-    double distanceInMeters = Geolocator.distanceBetween(
-      position.latitude,
-      position.longitude,
-      officeLatitude,
-      officeLongitude,
-    );
+    try { // Get the current position of the device
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.best);
 
-    // Define the threshold distance (e.g., 200 meters)
-    double thresholdDistance = 15;
+      // Calculate the distance between the user's location and the office location
+      double distanceInMeters = Geolocator.distanceBetween(
+        position.latitude,
+        position.longitude,
+        officeLatitude,
+        officeLongitude,
+      );
 
-    if (distanceInMeters <= thresholdDistance) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (_) => const CameraScreen()));
-    } else {
-      Get.snackbar("Error", "You're away from office..!",
-          colorText: ConstColor.white,
-          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-          backgroundColor: ConstColor.red.withOpacity(0.8),
-          icon: Icon(
-            Icons.error_outline,
-            color: ConstColor.white,
-            size: 30,
-          ));
-    }
+      // Define the threshold distance (e.g., 200 meters)
+      double thresholdDistance = 15;
+
+      if (distanceInMeters <= thresholdDistance) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => const CameraScreen()));
+      } else {
+        Get.snackbar("Error", "You're away from office..!",
+            colorText: ConstColor.white,
+            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+            backgroundColor: ConstColor.red.withOpacity(0.8),
+            icon: Icon(
+              Icons.error_outline,
+              color: ConstColor.white,
+              size: 30,
+            ));
+      }
+    } catch (e) {
+      log("Getting Error : $e");
+  }
   }
 }

@@ -7,13 +7,13 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:intl/intl.dart';
 import 'package:widget_circular_animator/widget_circular_animator.dart';
+
 import '../../../controller/camera_controller.dart';
 import '../../../modal/const/const_color.dart';
 import '../../../modal/const/const_image.dart';
@@ -30,9 +30,8 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreen extends State<CameraScreen> {
-  final CameraScreenController cameraController = Get.put(CameraScreenController());
-
-
+  final CameraScreenController cameraController =
+      Get.put(CameraScreenController());
 
   // ignore: prefer_typing_uninitialized_variables
   XFile? _imageFile;
@@ -48,14 +47,14 @@ class _CameraScreen extends State<CameraScreen> {
   List<CameraDescription> cameras = [];
 
   late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
+  late Future<void> initializeControllerFuture;
   int _selectedCameraIndex = 1;
 
   Future<void> _initializeCamera() async {
     cameras = await availableCameras();
     _controller = CameraController(
         cameras[_selectedCameraIndex], ResolutionPreset.medium);
-    _initializeControllerFuture = _controller.initialize();
+    initializeControllerFuture = _controller.initialize();
     setState(() {});
   }
 
@@ -67,7 +66,7 @@ class _CameraScreen extends State<CameraScreen> {
         cameras[_selectedCameraIndex],
         ResolutionPreset.medium,
       );
-      _initializeControllerFuture = _controller.initialize();
+      initializeControllerFuture = _controller.initialize();
       if (mounted) {
         setState(() {});
       }
@@ -100,7 +99,6 @@ class _CameraScreen extends State<CameraScreen> {
     }
   }
 
-
   @override
   void initState() {
     _getRecord();
@@ -130,7 +128,9 @@ class _CameraScreen extends State<CameraScreen> {
           color: ConstColor.blackText.withOpacity(0.7),
         ),
         title: Text(
-          (cameraController.checkIn.value == "--/--") ? "Punch In" : "Punch Out",
+          (cameraController.checkIn.value == "--/--")
+              ? "Punch In"
+              : "Punch Out",
           style: textStyleW600(size.width * 0.053, ConstColor.blackText),
         ),
       ),
@@ -145,7 +145,7 @@ class _CameraScreen extends State<CameraScreen> {
                 borderRadius: BorderRadius.circular(14),
                 color: ConstColor.white,
               ),
-              child: _buildCameraToggleButton(),
+              child: buildCameraToggleButton(),
             ),
           ),
           Expanded(child: Container()),
@@ -160,7 +160,7 @@ class _CameraScreen extends State<CameraScreen> {
             innerAnimationSeconds: 5,
             outerAnimationSeconds: 5,
             child: FutureBuilder(
-                future: _initializeControllerFuture,
+                future: initializeControllerFuture,
                 builder: (context, snapShot) {
                   if (snapShot.connectionState == ConnectionState.done) {
                     return Container(
@@ -177,9 +177,10 @@ class _CameraScreen extends State<CameraScreen> {
                     );
                   } else {
                     return Center(
-                        child: CircularProgressIndicator(
-                      color: ConstColor.primary,
-                    ));
+                      child: CircularProgressIndicator(
+                        color: ConstColor.primary,
+                      ),
+                    );
                   }
                 }),
           ),
@@ -187,8 +188,9 @@ class _CameraScreen extends State<CameraScreen> {
             height: size.height * 0.05,
           ),
           Text(
-            (cameraController.checkIn.value == "--/--") ?
-            "Verify to Punch In" : "Verify to Punch Out",
+            (cameraController.checkIn.value == "--/--")
+                ? "Verify to Punch In"
+                : "Verify to Punch Out",
             style: textStyleW600(size.width * 0.058, ConstColor.blackText),
           ),
           SizedBox(
@@ -231,8 +233,9 @@ class _CameraScreen extends State<CameraScreen> {
             }
 
             Navigator.popUntil(context, (route) => route.isFirst);
-            Navigator.pushReplacement(context,
-              CupertinoPageRoute(
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
                 builder: (context) => const EmployeeHomeScreen(),
               ),
             );
@@ -252,7 +255,8 @@ class _CameraScreen extends State<CameraScreen> {
           }
         } catch (e) {
           Get.snackbar(
-            "Error", "$e",
+            "Error",
+            "$e",
             colorText: ConstColor.white,
             dismissDirection: DismissDirection.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
@@ -270,7 +274,7 @@ class _CameraScreen extends State<CameraScreen> {
     });
   }
 
-  Widget _buildCameraToggleButton() {
+  Widget buildCameraToggleButton() {
     return GestureDetector(
       onTap: toggleCamera,
       child: SizedBox(
@@ -291,8 +295,10 @@ class _CameraScreen extends State<CameraScreen> {
         .where('id', isEqualTo: User.employeeId)
         .get();
 
-    DocumentSnapshot snap2 = await FirebaseFirestore.instance.collection("Employee")
-        .doc(snap.docs[0].id).collection("Record")
+    DocumentSnapshot snap2 = await FirebaseFirestore.instance
+        .collection("Employee")
+        .doc(snap.docs[0].id)
+        .collection("Record")
         .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
         .get();
 
@@ -309,7 +315,8 @@ class _CameraScreen extends State<CameraScreen> {
 
       Reference referenceImagesUpload = referenceImages.child(fileName);
       await referenceImagesUpload.putFile(filePicked);
-      cameraController.checkInUrl.value = await referenceImagesUpload.getDownloadURL();
+      cameraController.checkInUrl.value =
+          await referenceImagesUpload.getDownloadURL();
 
       await FirebaseFirestore.instance
           .collection("Employee")
@@ -323,7 +330,6 @@ class _CameraScreen extends State<CameraScreen> {
         'checkOut': "--/--",
         'checkOutImage': "",
       });
-
       log("TRY");
     } catch (e) {
       log("CHECK IN CATCH");
@@ -332,11 +338,15 @@ class _CameraScreen extends State<CameraScreen> {
   }
 
   clockOut(File filePicked) async {
-    QuerySnapshot snap = await FirebaseFirestore.instance.collection("Employee")
-        .where('id', isEqualTo: User.employeeId).get();
+    QuerySnapshot snap = await FirebaseFirestore.instance
+        .collection("Employee")
+        .where('id', isEqualTo: User.employeeId)
+        .get();
 
-    DocumentSnapshot snap2 = await FirebaseFirestore.instance.collection("Employee")
-        .doc(snap.docs[0].id).collection("Record")
+    DocumentSnapshot snap2 = await FirebaseFirestore.instance
+        .collection("Employee")
+        .doc(snap.docs[0].id)
+        .collection("Record")
         .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
         .get();
 
@@ -348,17 +358,23 @@ class _CameraScreen extends State<CameraScreen> {
     try {
       String checkOutTime = DateFormat('hh:mm a').format(DateTime.now());
 
-      String fileName = "${User.employeeId}_checkOut_${cameraController.currentDate}${DateFormat('MMMM').format(DateTime.now())}";
+      String fileName =
+          "${User.employeeId}_checkOut_${cameraController.currentDate}${DateFormat('MMMM').format(DateTime.now())}";
 
       Reference referenceImagesUpload = referenceImages.child(fileName);
 
       await referenceImagesUpload.putFile(filePicked);
-      cameraController.checkOutUrl.value = await referenceImagesUpload.getDownloadURL();
+      cameraController.checkOutUrl.value =
+          await referenceImagesUpload.getDownloadURL();
 
       String checkIn = snap2['checkIn'];
 
-      await FirebaseFirestore.instance.collection("Employee").doc(snap.docs[0].id).collection("Record")
-          .doc(DateFormat('dd MMMM yyyy').format(DateTime.now())).update({
+      await FirebaseFirestore.instance
+          .collection("Employee")
+          .doc(snap.docs[0].id)
+          .collection("Record")
+          .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+          .update({
         'date': Timestamp.now(),
         'checkIn': checkIn,
         'checkInImage': cameraController.checkInUrl.value,

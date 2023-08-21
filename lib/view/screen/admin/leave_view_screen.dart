@@ -45,6 +45,11 @@ class _LeaveViewScreenState extends State<LeaveViewScreen> {
   ];
 
   @override
+  void initState() {
+    controller.remark.value.text = widget.remark;
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
@@ -297,10 +302,6 @@ class _LeaveViewScreenState extends State<LeaveViewScreen> {
                   controller: controller.remark.value,
                   cursorColor: ConstColor.blackText,
                   maxLines: null,
-                  readOnly: (widget.status == "Approved" ||
-                          widget.status == "Rejected")
-                      ? true
-                      : false,
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: widget.remark,
@@ -325,39 +326,25 @@ class _LeaveViewScreenState extends State<LeaveViewScreen> {
                           size: 30,
                         ));
                   } else {
-                    if (widget.status == "Approved" ||
-                        widget.status == "Rejected") {
-                      Get.snackbar("Error", "Can't Update Status",
-                          colorText: ConstColor.white,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 15),
-                          backgroundColor: ConstColor.red.withOpacity(0.8),
-                          icon: Icon(
-                            Icons.error_outline,
-                            color: ConstColor.white,
-                            size: 30,
-                          ));
-                    } else {
-                      ProgressDialog().show(context);
+                    ProgressDialog().show(context);
 
-                      await FirebaseFirestore.instance
-                          .collection("Employee")
-                          .doc(widget.userId)
-                          .collection("Leaves")
-                          .doc(DateFormat('dd MMMM yyyy').format(DateTime.now())).update({
-                        "date": Timestamp.now(),
-                        "updatedDate": Timestamp.now(),
-                        "status": controller.selectedDropdownValue.value,
-                        "startDate": widget.fromDate,
-                        "endDate": widget.toDate,
-                        "remark": controller.remark.value.text,
-                        "leaveType": widget.leaveType,
-                        "reason": widget.reason,
-                      });
-                      ProgressDialog().hide(context);
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => AdminHomeScreen()));
-                    }
+                    await FirebaseFirestore.instance
+                        .collection("Employee")
+                        .doc(widget.userId)
+                        .collection("Leaves")
+                        .doc(DateFormat('dd MMMM yyyy').format(DateTime.now())).update({
+                      "date": Timestamp.now(),
+                      "updatedDate": Timestamp.now(),
+                      "status": controller.selectedDropdownValue.value,
+                      "startDate": widget.fromDate,
+                      "endDate": widget.toDate,
+                      "remark": controller.remark.value.text,
+                      "leaveType": widget.leaveType,
+                      "reason": widget.reason,
+                    });
+                    ProgressDialog().hide(context);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => AdminHomeScreen()));
                   }
                 },
                 btnColor: ConstColor.primary,

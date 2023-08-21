@@ -1,11 +1,9 @@
-import 'dart:developer';
-
-import 'package:attendance_app/modal/custom/progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../modal/const/const_color.dart';
+import '../modal/custom/progress_indicator.dart';
 import '../view/screen/admin/home_screen.dart';
 
 class CreateEmployeeController extends GetxController {
@@ -87,42 +85,60 @@ class CreateEmployeeController extends GetxController {
     } else {
       try {
         ProgressDialog().show(context);
-        await FirebaseFirestore.instance.collection("Employee").add({
-          "id": employeeID.value.text,
-          "name": name.value.text,
-          "aadhaar": aadhaarNo.value.text,
-          "address": address.value.text,
-          "birthdate": birthDate.value.text,
-          "bloodgroup ": bloodGroup.value.text,
-          "designation": designation.value.text,
-          "emergency": emergency.value.text,
-          "joiningdate": joiningDate.value.text,
-          "mail": emailID.value.text,
-          "mobile": mobileNo.value.text,
-          "pan": panNo.value.text,
-          "password": password.value.text,
-          "profile": "",
-        });
+
+        QuerySnapshot existingEmployee = await FirebaseFirestore.instance
+            .collection("Employee")
+            .where("id", isEqualTo: employeeID.value.text)
+            .get();
+
+        if(existingEmployee.docs.isNotEmpty){
         ProgressDialog().hide(context);
+          Get.snackbar("Error", "Employee with this ID already exists...",
+              colorText: ConstColor.white,
+              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+              backgroundColor: ConstColor.red.withOpacity(0.8),
+              icon: Icon(
+                Icons.error_outline,
+                color: ConstColor.white,
+                size: 30,
+              ));
+        }else{
+          await FirebaseFirestore.instance.collection("Employee").add({
+            "id": employeeID.value.text,
+            "name": name.value.text,
+            "aadhaar": aadhaarNo.value.text,
+            "address": address.value.text,
+            "birthdate": birthDate.value.text,
+            "bloodgroup ": bloodGroup.value.text,
+            "designation": designation.value.text,
+            "emergency": emergency.value.text,
+            "joiningdate": joiningDate.value.text,
+            "mail": emailID.value.text,
+            "mobile": mobileNo.value.text,
+            "pan": panNo.value.text,
+            "password": password.value.text,
+            "profile": "",
+          });
 
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (_) => AdminHomeScreen()),
-            (route) => false);
-
-        employeeID.value.clear();
-        name.value.clear();
-        designation.value.clear();
-        joiningDate.value.clear();
-        emailID.value.clear();
-        mobileNo.value.clear();
-        birthDate.value.clear();
-        bloodGroup.value.clear();
-        aadhaarNo.value.clear();
-        panNo.value.clear();
-        address.value.clear();
-        emergency.value.clear();
-        password.value.clear();
+          ProgressDialog().hide(context);
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => AdminHomeScreen()),
+                  (route) => false);
+          employeeID.value.clear();
+          name.value.clear();
+          designation.value.clear();
+          joiningDate.value.clear();
+          emailID.value.clear();
+          mobileNo.value.clear();
+          birthDate.value.clear();
+          bloodGroup.value.clear();
+          aadhaarNo.value.clear();
+          panNo.value.clear();
+          address.value.clear();
+          emergency.value.clear();
+          password.value.clear();
+        }
       } catch (e) {
         Get.snackbar("Error", "Something went wrong...",
             colorText: ConstColor.white,

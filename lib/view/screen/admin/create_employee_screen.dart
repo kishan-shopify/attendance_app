@@ -184,8 +184,8 @@ class _CreateEmployeeState extends State<CreateEmployee> {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2024),
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData(
@@ -209,8 +209,8 @@ class _CreateEmployeeState extends State<CreateEmployee> {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2024),
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData(

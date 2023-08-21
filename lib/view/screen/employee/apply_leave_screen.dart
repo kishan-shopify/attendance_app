@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -267,19 +265,20 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                       .parse(leaveController.startDate.value);
                   DateTime endDate = DateFormat('dd-MM-yyyy')
                       .parse(leaveController.endDate.value);
-
                   if (endDate.isBefore(startDate)) {
                     Get.snackbar(
-                        "Error", "End date cannot be before the start date..!",
-                        colorText: ConstColor.white,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 25, vertical: 15),
-                        backgroundColor: ConstColor.red.withOpacity(0.8),
-                        icon: Icon(
-                          Icons.error_outline,
-                          color: ConstColor.white,
-                          size: 30,
-                        ));
+                      "Error",
+                      "End date cannot be before the start date..!",
+                      colorText: ConstColor.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 25, vertical: 15),
+                      backgroundColor: ConstColor.red.withOpacity(0.8),
+                      icon: Icon(
+                        Icons.error_outline,
+                        color: ConstColor.white,
+                        size: 30,
+                      ),
+                    );
                   } else {
                     leaveController.applyLeave(context);
                   }

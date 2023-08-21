@@ -19,10 +19,8 @@ class HomeScreenController extends GetxController {
 
    fetchPresentDays(String userId, String month) async {
     try {
-      final snapshot = await firestore.collection("Employee").doc(userId)
-          .collection("Record")
-          .orderBy('date', descending: true)
-          .get();
+      final snapshot = await firestore.collection("Employee").doc(userId).collection("Record")
+          .orderBy('date', descending: true).get();
 
       final presentDaysList = snapshot.docs.where((doc) {
         final date = doc['date'].toDate();

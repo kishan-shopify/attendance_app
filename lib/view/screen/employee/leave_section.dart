@@ -206,7 +206,7 @@ class _LeaveSectionState extends State<LeaveSection> {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator(color: ConstColor.primary,));
           }
 
           if (snapshot.hasError) {
@@ -243,7 +243,7 @@ class _LeaveSectionState extends State<LeaveSection> {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator(color: ConstColor.primary,));
           }
 
           if (snapshot.hasError) {
@@ -280,7 +280,7 @@ class _LeaveSectionState extends State<LeaveSection> {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator(color: ConstColor.primary,));
           }
 
           if (snapshot.hasError) {

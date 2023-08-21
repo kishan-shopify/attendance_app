@@ -54,9 +54,7 @@ class _EmployeeAttendanceScreenState extends State<EmployeeAttendanceScreen> {
             CustomAdminAppBar(
               onTap: () {},
             ),
-            SizedBox(
-              height: size.height * 0.04
-            ),
+            SizedBox(height: size.height * 0.04),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -132,7 +130,8 @@ class _EmployeeAttendanceScreenState extends State<EmployeeAttendanceScreen> {
                         itemCount:
                             employeeController.employeeAttendanceList.length,
                         itemBuilder: (context, index) {
-                          final doc = employeeController.employeeAttendanceList[index];
+                          final doc =
+                              employeeController.employeeAttendanceList[index];
                           final date = doc['date'].toDate();
                           final checkIn = doc['checkIn'];
                           final checkOut = doc['checkOut'];
@@ -363,7 +362,7 @@ class _EmployeeAttendanceScreenState extends State<EmployeeAttendanceScreen> {
     } else {
       if (checkInDateTime.isAfter(lateComingDateTime) &&
           checkOutDateTime.isBefore(earlyGoingDateTime)) {
-        return ConstColor.primary;
+        return ConstColor.red;
       } else if (checkIn != "--/--" && checkOut == "--/--") {
         return ConstColor.red;
       } else if (checkInDateTime.isAfter(lateComingDateTime)) {

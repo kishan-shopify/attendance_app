@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -9,6 +8,7 @@ import '../../../modal/const/text_style.dart';
 import '../../../modal/custom/admin_app_bar.dart';
 import 'employee_leave_request.dart';
 import 'employee_list.dart';
+import 'employee_time_change_request.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
@@ -97,7 +97,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                     height: 15,
                   ),
                   labelContainer(
-                      size, "Time Change Request", ConstImage.clock, () {}),
+                      size, "Time Change Request", ConstImage.clock, () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => EmployeeTimeChangeRequest()));
+                  }),
                 ],
               ),
             ),
